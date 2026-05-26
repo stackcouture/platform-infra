@@ -13,3 +13,7 @@ output "iam_bucket_output_name" {
 output "networking_bucket_output_name" {
   value = google_storage_bucket.networking_state_bucket.name
 }
+
+output "platform_bucket_output_name" {
+  value = google_storage_bucket.platform_terraform_state_bucket.name
+}

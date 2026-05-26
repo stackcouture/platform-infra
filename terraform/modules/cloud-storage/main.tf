@@ -96,3 +96,28 @@ resource "google_storage_bucket" "networking_state_bucket" {
     managed_by  = "terraform"
   }
 }
+
+# Platform Terraform State Bucket 
+resource "google_storage_bucket" "platform_terraform_state_bucket" {
+  name          = var.platform_terraform_state
+  location      = var.location
+  storage_class = var.storage_class
+  uniform_bucket_level_access = true
+  force_destroy = false
+  versioning {
+    enabled = true
+  }
+  lifecycle_rule {
+    condition {
+      age = 30
+    }
+    action {
+      type          = "SetStorageClass"
+      storage_class = "NEARLINE"
+    }
+  }
+  labels = {
+    environment = var.environment
+    managed_by  = "terraform"
+  }
+}

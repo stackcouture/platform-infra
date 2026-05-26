@@ -50,3 +50,9 @@ variable "networking_state_bucket" {
   type        = string
   description = "Networking State bucket"
 }
+
+# Platform Terraform Bucket State
+variable "platform_terraform_state" {
+  type        = string
+  description = "Platform terraform state"
+}
