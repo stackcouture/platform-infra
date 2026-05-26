@@ -44,3 +44,9 @@ variable "iam_state_bucket_name" {
   type        = string
   description = "IAM State Bucket"
 }
+
+# Networking state bucket 
+variable "networking_state_bucket" {
+  type        = string
+  description = "Networking State bucket"
+}

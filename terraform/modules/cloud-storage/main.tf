@@ -71,3 +71,28 @@ resource "google_storage_bucket" "iam_state_bucket" {
     managed_by  = "terraform"
   }
 }
+
+# IAM Bucket 
+resource "google_storage_bucket" "networking_state_bucket" {
+  name          = var.networking_state_bucket
+  location      = var.location
+  storage_class = var.storage_class
+  uniform_bucket_level_access = true
+  force_destroy = false
+  versioning {
+    enabled = true
+  }
+  lifecycle_rule {
+    condition {
+      age = 30
+    }
+    action {
+      type          = "SetStorageClass"
+      storage_class = "NEARLINE"
+    }
+  }
+  labels = {
+    environment = var.environment
+    managed_by  = "terraform"
+  }
+}

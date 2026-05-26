@@ -9,3 +9,7 @@ output "artifact_bucket_name" {
 output "iam_bucket_name" {
   value = module.cloud_storage.iam_bucket_output_name
 }
+
+output "netwroking_bucket_name" {
+  value = module.cloud_storage.networking_bucket_output_name
+}

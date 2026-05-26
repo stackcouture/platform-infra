@@ -9,3 +9,7 @@ output "artifact_bucket_output_name" {
 output "iam_bucket_output_name" {
   value = google_storage_bucket.iam_state_bucket.name
 }
+
+output "networking_bucket_output_name" {
+  value = google_storage_bucket.networking_state_bucket.name
+}

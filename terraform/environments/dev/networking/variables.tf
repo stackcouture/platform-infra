@@ -1,0 +1,42 @@
+variable "project_id" {
+  type        = string
+  description = "Project Id"
+  default     = "project-18ee516c-a108-431d-a73"
+}
+
+variable "region_name" {
+  type        = string
+  description = "Region name"
+}
+
+variable "zone_name" {
+  type        = string
+  description = "Zone name"
+}
+
+# VPC Settings 
+variable "vpc_name" {
+  type        = string
+  description = "VPC name"
+}
+
+variable "auto_create_subnetworks" {
+  type        = bool
+  description = "Auto Create Subnetworks settings"
+}
+
+variable "routing_mode" {
+  type        = string
+  description = "Routing Mode"
+}
+
+# Subnet 
+variable "subnetwork_name" {
+  type        = string
+  description = "Private Subnet"
+}
+
+variable "subnetwork_ip_cidr_range" {
+  type        = string
+  description = "Subnetwork IP CIDR Range"
+}
