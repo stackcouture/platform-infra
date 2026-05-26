@@ -8,7 +8,7 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = "artifact-dev-state-bkt"
+    bucket = "iam-dev-state-bucket"
     prefix = "dev/iam-state"
   }
 }
