@@ -7,11 +7,4 @@ module "networking" {
   subnetwork_name          = var.subnetwork_name
   subnetwork_ip_cidr_range = var.subnetwork_ip_cidr_range
   region_name              = var.region_name
-
 }
-
-# module "subnets" {
-#   source                   = "../../../modules/networking"
-
-#   network_id               = module.vpc.vpc_id
-# }
