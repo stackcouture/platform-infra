@@ -2,7 +2,7 @@
 region_name = "asia-south1"
 
 # Cloud Storage
-bucket_name   = "terraform-gke-state-bkt"
+bucket_name   = "terraform-dev-gke-state-bkt"
 location      = "asia-south1"
 storage_class = "STANDARD"
 environment   = "dev"
