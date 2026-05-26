@@ -26,3 +26,8 @@ variable "artifact_bucket_name" {
   type        = string
   description = "Artifact repo bucket"
 }
+
+variable "iam_state_bucket_name" {
+  type = string 
+  description = "IAM State Bucket"
+}
