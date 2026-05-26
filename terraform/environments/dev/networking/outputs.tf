@@ -1,0 +1,7 @@
+output "vpc_name" {
+  value = module.networking.vpc_name
+}
+
+output "subnet_name" {
+  value = module.networking.subnet_name
+}
