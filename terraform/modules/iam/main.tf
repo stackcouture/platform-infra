@@ -58,3 +58,69 @@ resource "google_service_account_iam_member" "workload_identity" {
   role               = "roles/iam.workloadIdentityUser"
   member             = "serviceAccount:${var.project_id}.svc.id.goog[external-secrets/external-secrets]"
 }
+
+# Service Accounts for github actions 
+resource "google_project_service" "required_services" {
+  for_each = toset([
+    "iamcredentials.googleapis.com",
+    "sts.googleapis.com",
+    "artifactregistry.googleapis.com",
+  ])
+  project = var.project_id
+  service = each.value
+  disable_on_destroy = false
+}
+
+resource "google_service_account" "github_actions" {
+  project      = var.project_id
+  account_id   = var.service_account_id
+  display_name = "GitHub Actions"
+}
+
+resource "google_project_iam_member" "artifact_registry_writer" {
+  project = var.project_id
+  role    = var.artifact_registry_role
+  member = "serviceAccount:${google_service_account.github_actions.email}"
+}
+
+resource "google_iam_workload_identity_pool" "github_pool" {
+  project                   = var.project_id
+  workload_identity_pool_id = var.pool_id
+  display_name = "GitHub Pool"
+}
+
+resource "google_iam_workload_identity_pool_provider" "github_provider" {
+  project                            = var.project_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.github_pool.workload_identity_pool_id
+  workload_identity_pool_provider_id = var.provider_id
+
+  display_name = "GitHub Provider"
+
+  attribute_mapping = {
+    "google.subject"       = "assertion.sub"
+    "attribute.repository" = "assertion.repository"
+    "attribute.ref"        = "assertion.ref"
+  }
+
+  attribute_condition = <<EOT
+attribute.repository == "${var.github_org}/${var.github_repo}" &&
+attribute.ref == "refs/heads/main"
+EOT
+
+  oidc {
+    issuer_uri = "https://token.actions.githubusercontent.com"
+  }
+}
+
+resource "google_service_account_iam_member" "wif_user" {
+  service_account_id = google_service_account.github_actions.name
+  role = "roles/iam.workloadIdentityUser"
+  member = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/attribute.repository/${var.github_org}/${var.github_repo}"
+}
+
+
+
+
+
+
+

@@ -3,3 +3,7 @@ data "google_artifact_registry_repository" "repo" {
   location      = var.region_name
   repository_id = "vote-docker-repo"
 }
+
+data "google_project" "current" {
+  project_id = var.project_id
+}
