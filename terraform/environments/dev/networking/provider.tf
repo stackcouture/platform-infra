@@ -8,8 +8,8 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = "networking-dev-state-bucket"
-    prefix = "dev/networking-state"
+    bucket = "stackcouture-platform-tf-state"
+    prefix = "dev/networking"
   }
 }
 
