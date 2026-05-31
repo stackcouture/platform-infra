@@ -8,8 +8,8 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = "artifact-dev-state-bkt"
-    prefix = "dev/artifact-registry-state"
+    bucket = "stackcouture-platform-tf-state"
+    prefix = "dev/artifact-registry"
   }
 }
 

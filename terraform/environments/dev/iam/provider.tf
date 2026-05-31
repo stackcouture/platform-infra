@@ -8,8 +8,8 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = "iam-dev-state-bucket"
-    prefix = "dev/iam-state"
+    bucket = "stackcouture-platform-tf-state"
+    prefix = "dev/iam"
   }
 }
 

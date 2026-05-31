@@ -103,8 +103,8 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
   }
 
   attribute_condition = <<EOT
-attribute.repository == "${var.github_org}/${var.github_repo}" &&
-attribute.ref == "refs/heads/main"
+  attribute.repository == "stackcouture/voting-app" ||
+  attribute.repository == "stackcouture/platform-infra"
 EOT
 
   oidc {
@@ -112,10 +112,24 @@ EOT
   }
 }
 
-resource "google_service_account_iam_member" "wif_user" {
+# resource "google_service_account_iam_member" "wif_user" {
+#   service_account_id = google_service_account.github_actions.name
+#   role = "roles/iam.workloadIdentityUser"
+#   member = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/attribute.repository/${var.github_org}/${var.github_repo}"
+# }
+
+resource "google_service_account_iam_member" "voting_app_wif_user" {
   service_account_id = google_service_account.github_actions.name
-  role = "roles/iam.workloadIdentityUser"
-  member = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/attribute.repository/${var.github_org}/${var.github_repo}"
+  role               = "roles/iam.workloadIdentityUser"
+
+  member = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/attribute.repository/stackcouture/voting-app"
+}
+
+resource "google_service_account_iam_member" "platform_infra_wif_user" {
+  service_account_id = google_service_account.github_actions.name
+  role               = "roles/iam.workloadIdentityUser"
+
+  member = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/attribute.repository/stackcouture/platform-infra"
 }
 
 
