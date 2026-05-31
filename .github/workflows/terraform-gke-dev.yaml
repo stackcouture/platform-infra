@@ -11,8 +11,8 @@ on:
       - 'terraform/environments/dev/gke/**'
 
 env: 
-  TERRAFORM_VERSION: 1.8.5
-  TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
+  TERRAFORM_VERSION: 1.10.5
+  TF_PLUGIN_CACHE_DIR: /home/runner/.terraform.d/plugin-cache
   TF_WORKING_DIR: terraform/environments/dev/gke
 
 permissions:
@@ -50,12 +50,12 @@ jobs:
           # terraform_version: 1.8.5
       
       - name: Create Plugin Cache Dir
-        run: mkdir -p ~/.terraform.d/plugin-cache
+        run: mkdir -p /home/runner/.terraform.d/plugin-cache
       
       - name: Cache Terraform Providers
         uses: actions/cache@v4
         with:
-          path: ~/.terraform.d/plugin-cache
+          path: /home/runner/.terraform.d/plugin-cache
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
 
       - name: Terraform Format Check
@@ -120,12 +120,12 @@ jobs:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
       
       - name: Create Plugin Cache Dir
-        run: mkdir -p ~/.terraform.d/plugin-cache
+        run: mkdir -p /home/runner/.terraform.d/plugin-cache
       
       - name: Cache Terraform Providers
         uses: actions/cache@v4
         with:
-          path: ~/.terraform.d/plugin-cache
+          path: /home/runner/.terraform.d/plugin-cache
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
 
       - name: Terraform Init
