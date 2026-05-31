@@ -8,8 +8,8 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = "terraform-dev-gke-state-bkt"
-    prefix = "dev/gke-state"
+    bucket = "stackcouture-platform-tf-state"
+    prefix = "dev/gke"
   }
 }
 

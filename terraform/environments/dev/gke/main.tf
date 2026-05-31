@@ -3,16 +3,16 @@ data "google_client_config" "current" {}
 data "terraform_remote_state" "networking" {
   backend = "gcs"
   config = {
-    bucket = "networking-dev-state-bucket"
-    prefix = "dev/networking-state"
+    bucket = "stackcouture-platform-tf-state"
+    prefix = "dev/networking"
   }
 }
 
 data "terraform_remote_state" "iam" {
   backend = "gcs"
   config = {
-    bucket = "iam-dev-state-bucket"
-    prefix = "dev/iam-state"
+    bucket = "stackcouture-platform-tf-state"
+    prefix = "dev/iam"
   }
 }
 
