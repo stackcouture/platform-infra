@@ -1,5 +1,6 @@
 name: Terraform GKE Dev
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'terraform/environments/dev/gke/**'
