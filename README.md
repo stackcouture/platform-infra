@@ -194,3 +194,133 @@ variable "allow_gke_rule_name" {}
 - `vpc_name` — consumed by `gke` module
 - `subnet_name` — consumed by `gke` module
 ---
+### 📦 Module: `gke`
+
+**Path:** `terraform/modules/gke/`
+
+Provisions a private GKE cluster with a managed node pool. GKE nodes run inside the private subnet with no public IP addresses. Access to the Kubernetes API server is restricted to authorised networks.
+
+**What it creates:**
+
+| Resource          | Details                                                  |
+|-------------------|----------------------------------------------------------|
+| GKE Cluster       | Private cluster; master authorised networks configured   |
+| Default Node Pool | Removed immediately (replaced by custom node pool)       |
+| Custom Node Pool  | Auto-scaling node pool in the private subnet             |
+| Workload Identity | Binds GCP service accounts to Kubernetes service accounts|
+| Cluster Autoscaler| Scales nodes up/down based on pod demand                 |
+
+**Key variables:**
+
+```hcl
+variable "project_id"         {}
+variable "region"             { default = "asia-south1" }
+variable "cluster_name"       { default = "gitops-platform-cluster" }
+variable "min_node_count"     { default = 1 }
+variable "max_node_count"     { default = 3 }
+variable "initial_node_count" { default = 2 }
+variable "vpc_name"           {}   # from networking module output
+variable "subnet_name"        {}   # from networking module output
+variable "pods_range_name"    {}   # from networking module output
+variable "services_range_name"{}   # from networking module output
+```
+
+**Key outputs:**
+- `cluster_name` — used for `gcloud container clusters get-credentials`
+- `cluster_endpoint` — Kubernetes API server endpoint
+- `cluster_ca_certificate` — used for authenticating kubectl
+
+---
+### 📦 Module: `artifact-registry`
+
+**Path:** `terraform/modules/artifact-registry/`
+
+Provisions a private Docker container registry in GCP Artifact Registry. All application container images built by the `voting-app` CI pipeline are pushed here and pulled by GKE nodes.
+
+**What it creates:**
+
+| Resource | Details |
+|----------|---------|
+| Artifact Registry Repository | Docker format, private, in `asia-south1` |
+| IAM Bindings | GKE node service account granted `artifactregistry.reader` role |
+| IAM Bindings | CI/CD service account granted `artifactregistry.writer` role |
+
+**Key variables:**
+
+```hcl
+variable "project_id"       {}
+variable "region"           {}
+variable "repository_id"    {}
+variable "description"      {}
+```
+
+**Key outputs:**
+- `repository_url` — full Docker registry URL (e.g. `asia-south1-docker.pkg.dev/<project>/gitops-platform-registry`)
+  Used in CI workflows to push and pull images
+
+---
+### 📦 Module: `iam`
+
+**Path:** `terraform/modules/iam/`
+
+Manages all GCP service accounts and IAM role bindings for the platform. Follows the principle of least privilege — each service account only has the permissions it needs.
+
+**What it creates:**
+
+| Resource                    | Details                                                    |
+|-----------------------------|------------------------------------------------------------|
+| GKE Node Service Account    | Used by GKE worker nodes; `logging.logWriter`,             |
+|                             |  `monitoring.metricWriter`, `artifactregistry.reader`      | 
+| CI/CD Service Account       | Used by GitHub Actions; `artifactregistry.writer`,         |
+|                             | `container.developer`                                      |
+| Workload Identity Binding   | Maps the CI/CD GCP SA to a Kubernetes SA for keyless auth  |
+| GitHub Actions WIF Provider | Workload Identity Federation — allows GitHub Actions to    |
+|                             |  authenticate without a key file                           |
+| IAM Role Bindings           | Scoped role bindings for each service account              |
+
+**Key variables:**
+
+```hcl
+variable "project_id"         {}
+variable "project_number"     {}
+variable "gke_sa_name"        {}
+variable "ci_sa_name"         {}
+variable "github_org"         {}
+variable "github_repo"        {}
+```
+
+**Key outputs:**
+- `gke_node_sa_email` — attached to the GKE node pool (consumed by `gke` module)
+- `ci_sa_email` — used by GitHub Actions workflows for image push
+- `workload_identity_provider` — full WIF provider resource name for GitHub Actions
+
+---
+### 📦 Module: `cloud-storage`
+
+**Path:** `terraform/modules/cloud-storage/`
+
+Provisions a GCS (Google Cloud Storage) bucket used as the Terraform remote state backend. This ensures state is stored securely, remotely, and supports state locking to prevent concurrent applies.
+
+**What it creates:**
+
+| Resource          | Details                                                                 |
+|-------------------|-------------------------------------------------------------------------|
+| GCS Bucket        | Versioning enabled, uniform bucket-level access, `asia-south1`          |
+| Bucket Versioning | Retains previous state file versions for rollback                       |
+| Lifecycle Rules   | Cleans up old non-current state versions after a configurable retention |
+|                   | period                                                                  |
+| IAM Binding       | Grants the CI/CD service account access to read/write state             |
+
+**Key variables:**
+
+```hcl
+variable "project_id"         {}
+variable "region"             {}
+variable "bucket_name"        {}
+variable "retention_days"     {}
+```
+
+**Key outputs:**
+- `bucket_name` — referenced in `backend.tf` as the remote state bucket
+
+---
