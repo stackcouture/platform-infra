@@ -157,3 +157,40 @@ platform-infra/
             ├── variables.tf
             └── outputs.tf
 ```
+---
+## Modules In Detail
+
+### 📦 Module: `networking`
+
+**Path:** `terraform/modules/networking/`
+
+Provisions the complete GCP network stack that the GKE cluster and other services run inside.
+
+**What it creates:**
+
+| Resource      | Details                                                                       |
+|---------------|-------------------------------------------------------------------------------|
+| VPC Network   | Custom mode VPC — no auto-created subnets                                     |
+| Private Subnet| For GKE nodes — `asia-south1`, with secondary IP ranges for Pods and Services |
+| Firewall Rules | Allow internal cluster traffic; deny unauthorised external access            |
+
+**Key variables:**
+
+```hcl
+variable "project_id" {}
+variable "region_name" {}
+variable "zone_name" { }
+variable "vpc_name" {}
+variable "auto_create_subnetworks" {}
+variable "routing_mode" {}
+variable "subnetwork_name" {}
+variable "subnetwork_ip_cidr_range" {}
+variable "allow_internal_firewall_rule_name" {}
+variable "allow_external_firewall_rule_name" {}
+variable "allow_gke_rule_name" {}
+```
+
+**Key outputs:**
+- `vpc_name` — consumed by `gke` module
+- `subnet_name` — consumed by `gke` module
+---
