@@ -20,6 +20,6 @@ terraform {
 
   backend "gcs" {
     bucket = "stackcouture-platform-tf-state"
-    prefix = "dev/platform/monitoring"
+    prefix = "dev/platform/nginx-gateway"
   }
 }

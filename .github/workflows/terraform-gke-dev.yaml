@@ -1,14 +1,14 @@
 name: Terraform GKE Dev
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - 'terraform/environments/dev/gke/**'
-  push:
-    branches:
-      - main
-    paths:
-      - 'terraform/environments/dev/gke/**'
+  # pull_request:
+  #   paths:
+  #     - 'terraform/environments/dev/gke/**'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'terraform/environments/dev/gke/**'
 
 env: 
   TERRAFORM_VERSION: 1.10.5

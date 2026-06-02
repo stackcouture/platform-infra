@@ -3,4 +3,3 @@ dev.tfvars
 tfplan
 .terraform.*
 terraform*
-errored.tfstate
