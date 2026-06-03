@@ -14,6 +14,8 @@ resource "helm_release" "nginx_gateway_fabric" {
   create_namespace = false
 
   timeout = 600
+  atomic  = true
+  wait    = true
 
   values = [
     yamlencode({
