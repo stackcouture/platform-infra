@@ -1,7 +1,7 @@
 data "google_client_config" "current" {}
 
 module "artifact_registry" {
-  source                 = "../../../modules/artifact-registry"
+  source                 = "../../../../modules/storage/artifact-registry"
   project_id             = data.google_client_config.current.project
   region_name            = var.region_name
   repository_name        = var.repository_name

@@ -27,10 +27,10 @@ variable "artifact_bucket_name" {
   description = "Artifact repo bucket"
 }
 
-variable "iam_state_bucket_name" {
-  type = string 
-  description = "IAM State Bucket"
-}
+# variable "iam_state_bucket_name" {
+#   type = string 
+#   description = "IAM State Bucket"
+# }
 
 variable "networking_state_bucket" {
   type = string 
