@@ -9,8 +9,18 @@ resource "google_container_cluster" "demo_cluster" {
   network    = var.compute_network_name
   subnetwork = var.compute_subnetwork_name
 
-  initial_node_count       = var.initial_node_count       # 2
-  remove_default_node_pool = var.remove_default_node_pool # true
+  initial_node_count       = var.initial_node_count       
+  remove_default_node_pool = var.remove_default_node_pool 
+
+  node_config {
+    machine_type = "e2-medium"
+    disk_size_gb = 20
+    disk_type    = "pd-standard"
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+  }
 
   networking_mode = "VPC_NATIVE"
 
@@ -70,11 +80,11 @@ resource "google_container_node_pool" "system_pool" {
   cluster  = google_container_cluster.demo_cluster.name
   location = google_container_cluster.demo_cluster.location
 
-  initial_node_count = 2
+  initial_node_count = 1
 
   autoscaling {
     min_node_count = 1
-    max_node_count = 3
+    max_node_count = 2
   }
 
   upgrade_settings {
@@ -94,7 +104,7 @@ resource "google_container_node_pool" "system_pool" {
   }
 
   node_config {
-    machine_type = "e2-standard-2"
+    machine_type = "e2-medium"
     image_type   = "COS_CONTAINERD"
 
     disk_type    = "pd-standard"
@@ -139,7 +149,7 @@ resource "google_container_node_pool" "app_pool" {
 
   autoscaling {
     min_node_count = 1
-    max_node_count = 3
+    max_node_count = 2
   }
 
   upgrade_settings {
@@ -159,7 +169,7 @@ resource "google_container_node_pool" "app_pool" {
   }
 
   node_config {
-    machine_type = "e2-standard-4"
+    machine_type = "e2-standard-2"
     image_type   = "UBUNTU_CONTAINERD"
 
     disk_type    = "pd-standard"
