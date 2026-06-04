@@ -35,7 +35,7 @@ resource "helm_release" "kyverno" {
         }
 
         serviceMonitor = {
-          enabled = false
+          enabled = true
         }
       }
 
@@ -52,7 +52,7 @@ resource "helm_release" "kyverno" {
       }
 
       grafana = {
-        enabled = false
+        enabled = true
       }
     })
   ]
