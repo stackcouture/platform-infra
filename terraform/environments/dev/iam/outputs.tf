@@ -9,3 +9,8 @@ output "github_actions_sa_email" {
 output "workload_identity_provider" {
   value = module.iam.workload_identity_provider # google_iam_workload_identity_pool_provider.github_provider.name
 }
+
+output "kubecost_gsa_email" {
+  value = module.iam.kubecost_gsa_email
+}
+
