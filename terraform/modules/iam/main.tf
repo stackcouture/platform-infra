@@ -132,7 +132,32 @@ resource "google_service_account_iam_member" "platform_infra_wif_user" {
   member = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/attribute.repository/stackcouture/platform-infra"
 }
 
+###############   Kubecost ##############################
+# GCP Service Account for kubecost 
+resource "google_service_account" "kubecost_gsa" {
+  account_id   = "kubecost-gsa"
+  display_name = "Kubecost GSA"
+}
 
+# Compute Viewer
+resource "google_project_iam_member" "kubecost_compute_viewer" {
+  project = var.project_id
+  role    = "roles/compute.viewer"
+  member  = "serviceAccount:${google_service_account.kubecost_gsa.email}"
+}
+
+# General Viewer
+resource "google_project_iam_member" "kubecost_viewer" {
+  project = var.project_id
+  role    = "roles/viewer"
+  member  = "serviceAccount:${google_service_account.kubecost_gsa.email}"
+}
+
+resource "google_service_account_iam_member" "kubecost_workload_identity" {
+  service_account_id = google_service_account.kubecost_gsa.name
+  role = "roles/iam.workloadIdentityUser"
+  member = "serviceAccount:${var.project_id}.svc.id.goog[kubecost/kubecost]"
+}
 
 
 
