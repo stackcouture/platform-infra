@@ -10,3 +10,7 @@ variable "cluster_name" {
 variable "project_id" {
     type = string 
 }
+
+# variable "kubecost_gsa_email" {
+#   type = string
+# }

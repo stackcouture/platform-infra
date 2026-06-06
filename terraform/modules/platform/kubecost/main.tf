@@ -8,7 +8,7 @@ resource "helm_release" "kubecost" {
   name       = "kubecost"
   repository = "https://kubecost.github.io/cost-analyzer/"
   chart      = "cost-analyzer"
-  version = "2.8.5"
+  version    = "2.8.5"
 
   namespace        = kubernetes_namespace.kubecost.metadata[0].name
   create_namespace = false
@@ -24,16 +24,12 @@ resource "helm_release" "kubecost" {
       }
 
       prometheus = {
-        server = {
-          enabled = false
-        }
-
+        enabled = false
         fqdn = "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local"
       }
 
       serviceAccount = {
         create = true
-        name   = "kubecost"
       }
     })
   ]
@@ -41,15 +37,4 @@ resource "helm_release" "kubecost" {
   depends_on = [
     kubernetes_namespace.kubecost
   ]
-}
-
-resource "kubernetes_service_account" "kubecost" {
-  metadata {
-    name      = "kubecost"
-    namespace = kubernetes_namespace.kubecost.metadata[0].name
-
-    annotations = {
-      "iam.gke.io/gcp-service-account" = var.kubecost_gsa_email
-    }
-  }
 }

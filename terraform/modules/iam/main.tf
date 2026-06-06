@@ -153,13 +153,18 @@ resource "google_project_iam_member" "kubecost_viewer" {
   member  = "serviceAccount:${google_service_account.kubecost_gsa.email}"
 }
 
+# resource "google_service_account_iam_member" "kubecost_workload_identity" {
+#   service_account_id = google_service_account.kubecost_gsa.name
+#   role = "roles/iam.workloadIdentityUser"
+#   member = "serviceAccount:${var.project_id}.svc.id.goog[kubecost/kubecost]"
+# }
+
 resource "google_service_account_iam_member" "kubecost_workload_identity" {
   service_account_id = google_service_account.kubecost_gsa.name
-  role = "roles/iam.workloadIdentityUser"
-  member = "serviceAccount:${var.project_id}.svc.id.goog[kubecost/kubecost]"
+  role               = "roles/iam.workloadIdentityUser"
+
+  member = "serviceAccount:${var.project_id}.svc.id.goog[kubecost/kubecost-cost-analyzer]"
 }
-
-
 
 
 
