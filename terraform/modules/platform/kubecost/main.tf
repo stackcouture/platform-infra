@@ -17,15 +17,19 @@ resource "helm_release" "kubecost" {
     yamlencode({
       global = {
         clusterId = "${var.project_id}-${var.cluster_name}"
+
+        prometheus = {
+          enabled = false
+          fqdn    = "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090"
+        }
       }
 
       kubecostProductConfigs = {
         clusterName = var.cluster_name
       }
 
-      prometheus = {
+      persistentVolume = {
         enabled = false
-        fqdn = "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local"
       }
 
       serviceAccount = {

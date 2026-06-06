@@ -166,5 +166,12 @@ resource "google_service_account_iam_member" "kubecost_workload_identity" {
   member = "serviceAccount:${var.project_id}.svc.id.goog[kubecost/kubecost-cost-analyzer]"
 }
 
+resource "google_secret_manager_secret_iam_member" "cloudflare_token_access" {
+  project   = var.project_id
+  secret_id = "cloudflare-api-token"
+  role   = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:${google_service_account.eso_gsa.email}"
+}
+
 
 
