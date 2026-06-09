@@ -9,7 +9,7 @@ resource "kubernetes_storage_class" "premium_rwo_v2" {
     type = "pd-balanced"
   }
 
-  reclaim_policy      = "Retain"
+  reclaim_policy      = "Delete"
   volume_binding_mode = "WaitForFirstConsumer"
 
   allow_volume_expansion = true

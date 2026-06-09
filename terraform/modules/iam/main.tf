@@ -172,6 +172,3 @@ resource "google_secret_manager_secret_iam_member" "cloudflare_token_access" {
   role   = "roles/secretmanager.secretAccessor"
   member = "serviceAccount:${google_service_account.eso_gsa.email}"
 }
-
-
-
