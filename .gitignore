@@ -1,2 +1,4 @@
+terraform/environments/dev/platform/istio
 terraform/environments/dev/platform/istio/*
+terraform/modules/platform/istio/
 terraform/modules/platform/istio/*
