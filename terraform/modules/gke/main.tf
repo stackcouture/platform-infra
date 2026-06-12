@@ -2,7 +2,7 @@ resource "google_container_cluster" "demo_cluster" {
 
   project  = var.project_id
   name     = "${var.project_id}-gke"
-  location = var.location_name
+  location = var.location_name 
 
   deletion_protection = var.deletion_protection
 
@@ -32,6 +32,8 @@ resource "google_container_cluster" "demo_cluster" {
     cluster_secondary_range_name  = "pods-range"
     services_secondary_range_name = "services-range"
   }
+
+  default_max_pods_per_node = 64
 
   release_channel {
     channel = "REGULAR"

@@ -4,6 +4,7 @@ resource "kubernetes_namespace_v1" "istio_system" {
   }
 }
 
+# Istio Base CRDs
 resource "helm_release" "istio_base" {
   name       = "istio-base"
   repository = "https://istio-release.storage.googleapis.com/charts"
@@ -36,16 +37,24 @@ resource "helm_release" "istiod" {
 
   values = [
     yamlencode({
+
       pilot = {
         replicaCount = 2
       }
 
       global = {
         proxy = {
+          autoInject = "enabled"
+
           resources = {
             requests = {
               cpu    = "100m"
               memory = "128Mi"
+            }
+
+            limits = {
+              cpu    = "500m"
+              memory = "512Mi"
             }
           }
         }
@@ -53,6 +62,15 @@ resource "helm_release" "istiod" {
 
       meshConfig = {
         accessLogFile = "/dev/stdout"
+
+        enableTracing = true
+
+        defaultConfig = {
+          tracing = {
+            sampling = 100
+          }
+          holdApplicationUntilProxyStarts = true
+        }
       }
     })
   ]
@@ -62,6 +80,7 @@ resource "helm_release" "istiod" {
   ]
 }
 
+# Istio Gateway 
 resource "helm_release" "istio_gateway" {
   name       = "istio-ingressgateway"
   repository = "https://istio-release.storage.googleapis.com/charts"
@@ -80,6 +99,18 @@ resource "helm_release" "istio_gateway" {
 
       service = {
         type = "LoadBalancer"
+      }
+
+      resources = {
+        requests = {
+          cpu    = "100m"
+          memory = "128Mi"
+        }
+
+        limits = {
+          cpu    = "500m"
+          memory = "512Mi"
+        }
       }
     })
   ]
