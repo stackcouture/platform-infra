@@ -82,11 +82,11 @@ resource "google_container_node_pool" "system_pool" {
   cluster  = google_container_cluster.demo_cluster.name
   location = google_container_cluster.demo_cluster.location
 
-  initial_node_count = 1
+  initial_node_count = 2
 
   autoscaling {
-    min_node_count = 1
-    max_node_count = 2
+    min_node_count = 2
+    max_node_count = 5
   }
 
   upgrade_settings {
@@ -106,7 +106,7 @@ resource "google_container_node_pool" "system_pool" {
   }
 
   node_config {
-    machine_type = "e2-medium"
+    machine_type = "e2-standard-2"
     image_type   = "COS_CONTAINERD"
 
     disk_type    = "pd-standard"
@@ -147,11 +147,11 @@ resource "google_container_node_pool" "app_pool" {
   cluster  = google_container_cluster.demo_cluster.name
   location = google_container_cluster.demo_cluster.location
 
-  initial_node_count = 1
+  initial_node_count = 2
 
   autoscaling {
-    min_node_count = 1
-    max_node_count = 2
+    min_node_count = 2
+    max_node_count = 5
   }
 
   upgrade_settings {
@@ -171,7 +171,7 @@ resource "google_container_node_pool" "app_pool" {
   }
 
   node_config {
-    machine_type = "e2-standard-2"
+    machine_type = "e2-standard-4"
     image_type   = "UBUNTU_CONTAINERD"
 
     disk_type    = "pd-standard"
@@ -190,6 +190,12 @@ resource "google_container_node_pool" "app_pool" {
     labels = {
       workload = "applications"
       env      = "dev"
+    }
+
+    taint {
+      key    = "workload"
+      value  = "app"
+      effect = "NO_SCHEDULE"
     }
 
     shielded_instance_config {
