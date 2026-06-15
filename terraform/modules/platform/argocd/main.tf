@@ -12,8 +12,11 @@ resource "helm_release" "argocd" {
   namespace        = kubernetes_namespace.argocd.metadata[0].name
   create_namespace = false
 
-  set {
-    name  = "installCRDs"
-    value = "true"
-  }
+  # set {
+  #   name  = "installCRDs"
+  #   value = "true"
+  # }
+  values = [
+    file("${path.module}/values.yaml")
+  ]
 }

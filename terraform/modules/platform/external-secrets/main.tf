@@ -12,8 +12,11 @@ resource "helm_release" "external_secrets" {
   namespace        = kubernetes_namespace.external_secrets.metadata[0].name
   create_namespace = false
 
-  set {
-    name  = "installCRDs"
-    value = "true"
-  }
+  # set {
+  #   name  = "installCRDs"
+  #   value = "true"
+  # }
+  values = [
+    file("${path.module}/values.yaml")
+  ]
 }

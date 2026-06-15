@@ -1,0 +1,40 @@
+installCRDs: true
+
+global:
+  nodeSelector:
+    workload: system
+
+  tolerations:
+    - key: workload
+      operator: Equal
+      value: system
+      effect: NoSchedule
+
+nodeSelector:
+  workload: system
+
+tolerations:
+  - key: workload
+    operator: Equal
+    value: system
+    effect: NoSchedule
+
+webhook:
+  nodeSelector:
+    workload: system
+
+  tolerations:
+    - key: workload
+      operator: Equal
+      value: system
+      effect: NoSchedule
+
+certController:
+  nodeSelector:
+    workload: system
+
+  tolerations:
+    - key: workload
+      operator: Equal
+      value: system
+      effect: NoSchedule

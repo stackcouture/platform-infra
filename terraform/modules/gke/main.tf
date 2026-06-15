@@ -119,7 +119,8 @@ resource "google_container_node_pool" "system_pool" {
     ]
 
     labels = {
-      env = "dev"
+      env = "dev",
+      workload = "system"
     }
 
     taint {
@@ -147,10 +148,10 @@ resource "google_container_node_pool" "app_pool" {
   cluster  = google_container_cluster.demo_cluster.name
   location = google_container_cluster.demo_cluster.location
 
-  initial_node_count = 2
+  initial_node_count = 3
 
   autoscaling {
-    min_node_count = 2
+    min_node_count = 3
     max_node_count = 5
   }
 
@@ -188,7 +189,7 @@ resource "google_container_node_pool" "app_pool" {
     }
 
     labels = {
-      workload = "applications"
+      workload = "app"
       env      = "dev"
     }
 
