@@ -124,12 +124,6 @@ resource "google_container_node_pool" "system_pool" {
       pool     = "system"
     }
 
-    taint {
-      key    = "workload"
-      value  = "system"
-      effect = "NO_SCHEDULE"
-    }
-
     metadata = {
       disable-legacy-endpoints = "true"
     }

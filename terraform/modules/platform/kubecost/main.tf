@@ -35,6 +35,22 @@ resource "helm_release" "kubecost" {
       serviceAccount = {
         create = true
       }
+
+      nodeSelector = {
+        workload = "system"
+      }
+
+      forecasting = {
+        nodeSelector = {
+          workload = "system"
+        }
+      }
+
+      grafana = {
+        nodeSelector = {
+          workload = "system"
+        }
+      }
     })
   ]
 
