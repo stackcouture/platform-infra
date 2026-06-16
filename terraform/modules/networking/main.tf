@@ -65,3 +65,20 @@ resource "google_compute_firewall" "allow_gke" {
   }
   source_ranges = ["0.0.0.0/0"]
 }
+
+# Cloud Router
+resource "google_compute_router" "nat_router" {
+  name    = "${var.vpc_name}-router"
+  region  = var.region_name
+  network = google_compute_network.vpc.id
+}
+
+# Cloud NAT
+resource "google_compute_router_nat" "cloud_nat" {
+  name                               = "${var.vpc_name}-nat"
+  router                             = google_compute_router.nat_router.name
+  region                             = var.region_name
+
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+}
