@@ -3,29 +3,13 @@ installCRDs: true
 nodeSelector:
   workload: system
 
-tolerations:
-  - key: workload
-    operator: Equal
-    value: system
-    effect: NoSchedule
-
 webhook:
   nodeSelector:
     workload: system
-  tolerations:
-    - key: workload
-      operator: Equal
-      value: system
-      effect: NoSchedule
 
 cainjector:
   nodeSelector:
     workload: system
-  tolerations:
-    - key: workload
-      operator: Equal
-      value: system
-      effect: NoSchedule
 
 startupapicheck:
   enabled: false
