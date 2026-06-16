@@ -13,25 +13,6 @@ resource "helm_release" "kube_prometheus_stack" {
   create_namespace = false
 
   values = [
-    yamlencode({
-      installCRDs = true
-
-      controller = {
-        replicas = 2
-      }
-
-      dashboard = {
-        enabled = true
-      }
-
-      metrics = {
-        enabled = true
-      }
-    })
+    file("${path.module}/values.yaml")
   ]
-
-  set {
-    name  = "installCRDs"
-    value = "true"
-  }
 }

@@ -1,0 +1,74 @@
+prometheusOperator:
+  nodeSelector:
+    workload: system
+
+  tolerations:
+    - key: workload
+      operator: Equal
+      value: system
+      effect: NoSchedule
+
+  admissionWebhooks:
+    patch:
+      nodeSelector:
+        workload: system
+
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: system
+          effect: NoSchedule
+
+grafana:
+  nodeSelector:
+    workload: system
+
+  tolerations:
+    - key: workload
+      operator: Equal
+      value: system
+      effect: NoSchedule
+
+prometheus:
+  prometheusSpec:
+    nodeSelector:
+      workload: system
+
+    tolerations:
+      - key: workload
+        operator: Equal
+        value: system
+        effect: NoSchedule
+
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      workload: system
+
+    tolerations:
+      - key: workload
+        operator: Equal
+        value: system
+        effect: NoSchedule
+
+kube-state-metrics:
+  nodeSelector:
+    workload: system
+
+  tolerations:
+    - key: workload
+      operator: Equal
+      value: system
+      effect: NoSchedule
+
+prometheus-node-exporter:
+  nodeSelector:
+    workload: system
+
+  tolerations:
+    - key: workload
+      operator: Equal
+      value: system
+      effect: NoSchedule
+
+installCRDs: true

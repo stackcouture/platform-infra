@@ -119,8 +119,9 @@ resource "google_container_node_pool" "system_pool" {
     ]
 
     labels = {
-      env = "dev",
+      env = "dev"
       workload = "system"
+      pool     = "system"
     }
 
     taint {
@@ -138,7 +139,7 @@ resource "google_container_node_pool" "system_pool" {
       enable_integrity_monitoring = true
     }
 
-    tags = ["gke-node"]
+    tags = ["generla-system-pool"]
   }
 }
 
@@ -148,10 +149,10 @@ resource "google_container_node_pool" "app_pool" {
   cluster  = google_container_cluster.demo_cluster.name
   location = google_container_cluster.demo_cluster.location
 
-  initial_node_count = 3
+  initial_node_count = 2
 
   autoscaling {
-    min_node_count = 3
+    min_node_count = 2
     max_node_count = 5
   }
 
@@ -172,8 +173,8 @@ resource "google_container_node_pool" "app_pool" {
   }
 
   node_config {
-    machine_type = "e2-standard-4"
-    image_type   = "UBUNTU_CONTAINERD"
+    machine_type = "e2-standard-2"
+    image_type   = "COS_CONTAINERD"
 
     disk_type    = "pd-standard"
     disk_size_gb = 30
@@ -189,6 +190,7 @@ resource "google_container_node_pool" "app_pool" {
     }
 
     labels = {
+      pool     = "app"
       workload = "app"
       env      = "dev"
     }
@@ -205,6 +207,73 @@ resource "google_container_node_pool" "app_pool" {
     }
 
     tags = ["general-app-pool"]
+  }
+}
+
+resource "google_container_node_pool" "data_pool" {
+
+  name     = "data-pool"
+  cluster  = google_container_cluster.demo_cluster.name
+  location = google_container_cluster.demo_cluster.location
+
+  initial_node_count = 1
+
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 3
+  }
+
+  upgrade_settings {
+    max_surge       = 1
+    max_unavailable = 0
+  }
+
+  lifecycle {
+    ignore_changes = [
+      initial_node_count
+    ]
+  }
+
+  management {
+    auto_repair  = true
+    auto_upgrade = true
+  }
+
+  node_config {
+    machine_type = "e2-standard-4"
+    image_type   = "COS_CONTAINERD"
+
+    disk_type    = "pd-ssd"
+    disk_size_gb = 50
+
+    service_account = var.sa_node_email
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+
+    labels = {
+      pool     = "data"
+      workload = "data"
+      env      = "dev"
+    }
+
+    taint {
+      key    = "workload"
+      value  = "data"
+      effect = "NO_SCHEDULE"
+    }
+
+    shielded_instance_config {
+      enable_secure_boot          = true
+      enable_integrity_monitoring = true
+    }
+
+    tags = ["general-data-pool"]
   }
 }
 
