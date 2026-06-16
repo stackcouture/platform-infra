@@ -13,16 +13,20 @@ resource "helm_release" "cert_manager" {
   namespace        = kubernetes_namespace.cert_manager.metadata[0].name
   create_namespace = false
 
-  values = [
-    yamlencode({
-      crds = {
-        enabled = true
-      }
+  # values = [
+  #   yamlencode({
+  #     crds = {
+  #       enabled = true
+  #     }
 
-      prometheus = {
-        enabled = true
-      }
-    })
+  #     prometheus = {
+  #       enabled = true
+  #     }
+  #   })
+  # ]
+
+   values = [
+    file("${path.module}/values.yaml")
   ]
 
   depends_on = [
