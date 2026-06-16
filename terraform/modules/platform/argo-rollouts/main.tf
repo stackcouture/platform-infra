@@ -17,22 +17,26 @@ resource "helm_release" "argo_rollouts" {
   wait    = true
   atomic  = true
 
+  # values = [
+  #   yamlencode({
+  #     installCRDs = true
+
+  #     controller = {
+  #       replicas = 2
+  #     }
+
+  #     dashboard = {
+  #       enabled = true
+  #     }
+
+  #     metrics = {
+  #       enabled = true
+  #     }
+  #   })
+  # ]
+
   values = [
-    yamlencode({
-      installCRDs = true
-
-      controller = {
-        replicas = 2
-      }
-
-      dashboard = {
-        enabled = true
-      }
-
-      metrics = {
-        enabled = true
-      }
-    })
+    file("${path.module}/values.yaml")
   ]
 
   depends_on = [
