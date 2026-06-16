@@ -1,0 +1,61 @@
+# operator:
+#   replicaCount: 2
+
+#   nodeSelector:
+#     workload: system
+
+#   tolerations:
+#     - key: workload
+#       operator: Equal
+#       value: system
+#       effect: NoSchedule
+
+# metricsServer:
+#   replicaCount: 2
+
+#   nodeSelector:
+#     workload: system
+
+#   tolerations:
+#     - key: workload
+#       operator: Equal
+#       value: system
+#       effect: NoSchedule
+
+# webhooks:
+#   replicaCount: 2
+
+#   nodeSelector:
+#     workload: system
+
+#   tolerations:
+#     - key: workload
+#       operator: Equal
+#       value: system
+#       effect: NoSchedule
+
+# prometheus:
+#   metricServer:
+#     enabled: true
+
+nodeSelector:
+  workload: system
+
+tolerations:
+  - key: workload
+    operator: Equal
+    value: system
+    effect: NoSchedule
+
+operator:
+  replicaCount: 2
+
+metricsServer:
+  replicaCount: 2
+
+webhooks:
+  replicaCount: 2
+
+prometheus:
+  metricServer:
+    enabled: true

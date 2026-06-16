@@ -18,31 +18,9 @@ resource "helm_release" "keda" {
   atomic  = true
 
   values = [
-    yamlencode({
-      crds = {
-        install = true
-      }
-
-      operator = {
-        replicaCount = 2
-      }
-
-      metricsServer = {
-        replicaCount = 2
-      }
-
-      webhooks = {
-        replicaCount = 2
-      }
-
-      prometheus = {
-        metricServer = {
-          enabled = true
-        }
-      }
-    })
+    file("${path.module}/values.yaml")
   ]
-
+  
   depends_on = [
     kubernetes_namespace_v1.keda
   ]
