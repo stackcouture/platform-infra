@@ -1,12 +1,6 @@
 nodeSelector:
   workload: system
 
-tolerations:
-  - key: workload
-    operator: Equal
-    value: system
-    effect: NoSchedule
-
 operator:
   replicaCount: 2
 
