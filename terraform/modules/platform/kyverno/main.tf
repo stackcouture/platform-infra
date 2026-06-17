@@ -43,6 +43,10 @@ resource "helm_release" "kyverno" {
         replicas = 2
       }
 
+      nodeSelector = {
+        workload = "system"
+      }
+
       cleanupController = {
         replicas = 1
       }
