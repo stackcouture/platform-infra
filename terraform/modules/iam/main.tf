@@ -172,3 +172,11 @@ resource "google_secret_manager_secret_iam_member" "cloudflare_token_access" {
   role   = "roles/secretmanager.secretAccessor"
   member = "serviceAccount:${google_service_account.eso_gsa.email}"
 }
+
+# Postgres Secret Access
+resource "google_secret_manager_secret_iam_member" "postgres_secret_access" {
+  project   = var.project_id
+  secret_id = data.google_secret_manager_secret.postgres_password.secret_id
+  role   = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:${google_service_account.eso_gsa.email}"
+}
