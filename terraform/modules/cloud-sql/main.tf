@@ -58,3 +58,8 @@ resource "google_sql_database_instance" "postgres" {
     }
   }
 }
+
+resource "google_sql_database" "votingapp" {
+  name     = "votingapp"
+  instance = google_sql_database_instance.postgres.name
+}
