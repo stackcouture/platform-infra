@@ -1,0 +1,25 @@
+driver:
+  kind: modern_ebpf
+
+falco:
+  jsonOutput: true
+  logLevel: info
+
+nodeSelector:
+  workload: system
+
+falcoctl:
+  artifact:
+    install:
+      enabled: true
+    follow:
+      enabled: true
+
+falcosidekick:
+  enabled: true
+
+serviceMonitor:
+  create: true
+
+collectors:
+  enabled: true
