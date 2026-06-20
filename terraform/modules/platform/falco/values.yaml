@@ -1,13 +1,6 @@
 driver:
   kind: modern_ebpf
 
-falco:
-  jsonOutput: true
-  logLevel: info
-
-nodeSelector:
-  workload: system
-
 falcoctl:
   artifact:
     install:
@@ -23,3 +16,6 @@ serviceMonitor:
 
 collectors:
   enabled: true
+
+tolerations:
+  - operator: Exists
