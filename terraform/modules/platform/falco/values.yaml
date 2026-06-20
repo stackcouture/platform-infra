@@ -19,3 +19,54 @@ collectors:
 
 tolerations:
   - operator: Exists
+
+customRules:
+  vote-rules.yaml: |-
+    - rule: Any Shell Access
+      desc: Any shell access
+      condition: >
+        spawned_process and
+        proc.name in (sh,bash,dash)
+      output: >
+        Shell detected
+        (proc=%proc.name cmd=%proc.cmdline)
+      priority: WARNING
+      tags: [shell]
+
+  redis-rules.yaml: |-
+    - rule: Redis Shell Access
+      desc: Shell spawned in redis namespace
+      condition: >
+        spawned_process and
+        proc.name in (bash,sh,dash) and
+        k8s.ns.name=redis
+      output: >
+        Shell access detected in redis
+        (pod=%k8s.pod.name cmd=%proc.cmdline)
+      priority: WARNING
+      tags: [redis,shell]
+
+  postgres-rules.yaml: |-
+    - rule: PostgreSQL Shell Access
+      desc: Shell spawned in postgres namespace
+      condition: >
+        spawned_process and
+        proc.name in (bash,sh,dash) and
+        k8s.ns.name=postgres
+      output: >
+        Shell access detected in postgres
+        (pod=%k8s.pod.name cmd=%proc.cmdline)
+      priority: WARNING
+      tags: [postgres,shell]
+
+    - rule: PostgreSQL Data Access
+      desc: PostgreSQL data directory access
+      condition: >
+        open_read and
+        fd.name contains "/var/lib/postgresql/data" and
+        k8s.ns.name=postgres
+      output: >
+        PostgreSQL data accessed
+        (pod=%k8s.pod.name file=%fd.name)
+      priority: WARNING
+      tags: [postgres,data]
