@@ -1,0 +1,8 @@
+reloader:
+  deployment:
+    replicas: 1
+  
+  enableHA: false
+
+nodeSelector:
+  workload: system
