@@ -1,0 +1,40 @@
+global:
+  enabled: true
+
+injector:
+  enabled: true
+
+ui:
+  enabled: true
+
+server:
+  replicas: 3
+
+  dataStorage:
+    enabled: true
+    size: 2Gi
+    storageClass: premium-rwo-v2
+
+  nodeSelector:
+    workload: system
+
+  ha:
+    enabled: true
+
+    raft:
+      enabled: true
+
+      config: |
+        ui = true
+
+        listener "tcp" {
+          tls_disable = 1
+          address     = "[::]:8200"
+          cluster_address = "[::]:8201"
+        }
+
+        storage "raft" {
+          path = "/vault/data"
+        }
+
+        service_registration "kubernetes" {}
