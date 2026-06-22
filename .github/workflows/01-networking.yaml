@@ -109,6 +109,12 @@ jobs:
         - name: GCP Authentication
           uses: ./.github/actions/gcp-auth
 
+        - name: Check Active Identity Token
+          run: |
+            gcloud auth list
+            gcloud auth print-identity-token >/dev/null
+            echo "Identity token generated successfully"
+
         - name: Setup Terraform
           uses: hashicorp/setup-terraform@v3
           with:
