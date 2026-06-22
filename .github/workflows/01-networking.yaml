@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'environments/dev/networking/**'
-      - 'modules/networking/**'
+      - 'terraform/environments/dev/networking/**'
+      - 'terraform/modules/networking/**'
 
   workflow_dispatch:
 
