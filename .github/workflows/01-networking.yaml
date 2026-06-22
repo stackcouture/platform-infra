@@ -137,5 +137,8 @@ jobs:
             pwd
             ls -lah
 
+        - name: Terraform Show Plan
+          run: terraform show tfplan
+
         - name: Terraform Apply
-          run: terraform apply tfplan
+          run: terraform apply -input=false -lock-timeout=5m tfplan
