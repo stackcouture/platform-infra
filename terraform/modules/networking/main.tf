@@ -64,7 +64,7 @@ resource "google_compute_firewall" "allow_internal" {
   }
 }
 
-# Firewall for external access SSH, ICMP
+# Firewall for external access SSH, ICMP 
 # resource "google_compute_firewall" "allow_ssh" {
 #   name    = var.allow_external_firewall_rule_name
 #   network = google_compute_network.vpc.id
