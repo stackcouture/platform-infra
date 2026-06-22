@@ -1,12 +1,12 @@
 name: Networking
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'terraform/environments/dev/networking/**'
-      - 'terraform/modules/networking/**'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'terraform/environments/dev/networking/**'
+  #     - 'terraform/modules/networking/**'
 
   workflow_dispatch:
 
