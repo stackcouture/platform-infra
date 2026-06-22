@@ -58,7 +58,7 @@ jobs:
         run: terraform fmt -check -recursive
       
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -input=false
 
       - name: Terraform Validate
         run: terraform validate
@@ -87,3 +87,53 @@ jobs:
         with:
           name: tfplan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
+  
+  terraform-apply:
+    name: Terraform Apply
+    needs: terraform-plan
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+    environment: development
+
+    defaults:
+        run:
+          working-directory: ${{ env.TF_WORKING_DIR }}
+
+    steps:
+        - uses: actions/checkout@v4
+
+        - name: GCP Authentication
+          uses: ./.github/actions/gcp-auth
+
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v3
+          with:
+            terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+        - name: Create Plugin Cache Dir
+          run: mkdir -p /home/runner/.terraform.d/plugin-cache
+
+        - name: Cache Terraform Providers
+          uses: actions/cache@v4
+          with:
+            path: /home/runner/.terraform.d/plugin-cache
+            key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+
+        - name: Terraform Init
+          run: terraform init -input=false
+
+        - name: Download Plan
+          uses: actions/download-artifact@v4
+          with:
+            name: tfplan
+            path: ${{ env.TF_WORKING_DIR }}
+
+        - name: Verify Downloaded Plan
+          run: |
+            pwd
+            ls -lah
+
+        - name: Terraform Apply
+          run: terraform apply tfplan
