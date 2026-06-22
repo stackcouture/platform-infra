@@ -51,6 +51,7 @@ resource "google_compute_firewall" "allow_internal" {
   # allow {
   #   protocol = "all"
   # }    
+  
   allow {
     protocol = "tcp"
   }
