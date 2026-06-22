@@ -180,3 +180,10 @@ resource "google_secret_manager_secret_iam_member" "postgres_secret_access" {
   role   = "roles/secretmanager.secretAccessor"
   member = "serviceAccount:${google_service_account.eso_gsa.email}"
 }
+
+# Github actions permission for buckets 
+resource "google_storage_bucket_iam_member" "github_actions_tf_state" {
+  bucket = "stackcouture-platform-tf-state"
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:github-actions@project-18ee516c-a108-431d-a73.iam.gserviceaccount.com"
+}
