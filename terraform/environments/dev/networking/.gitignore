@@ -1,5 +1,4 @@
 .terraform/
-dev.tfvars
 tfplan
 .terraform.*
 terraform*
