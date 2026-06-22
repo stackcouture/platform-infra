@@ -109,17 +109,6 @@ jobs:
         - name: GCP Authentication
           uses: ./.github/actions/gcp-auth
 
-        - name: Verify GCP Identity
-          run: |
-            gcloud auth list
-            gcloud config get-value project
-
-        - name: Test Firewall Access
-          run: |
-            gcloud compute firewall-rules describe internal-firewall-rule
-            gcloud compute firewall-rules describe external-firewall-rule
-            gcloud compute firewall-rules describe gke-firewall-rule
-
         - name: Setup Terraform
           uses: hashicorp/setup-terraform@v3
           with:
