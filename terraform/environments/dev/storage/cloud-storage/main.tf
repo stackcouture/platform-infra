@@ -6,6 +6,7 @@ module "cloud_storage" {
   environment          = var.environment
   artifact_bucket_name = var.artifact_bucket_name
   # iam_state_bucket_name    = var.iam_state_bucket_name
-  networking_state_bucket  = var.networking_state_bucket
-  platform_terraform_state = var.platform_terraform_state
+  networking_state_bucket   = var.networking_state_bucket
+  platform_terraform_state  = var.platform_terraform_state
+  velero_backup_bucket_name = var.velero_backup_bucket_name
 }

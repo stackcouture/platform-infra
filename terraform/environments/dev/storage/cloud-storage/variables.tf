@@ -56,3 +56,9 @@ variable "platform_terraform_state" {
   type        = string
   description = "Platform terraform state"
 }
+
+# Velero Terraform Bucket State
+variable "velero_backup_bucket_name" {
+  type        = string
+  description = "Velero terraform state"
+}

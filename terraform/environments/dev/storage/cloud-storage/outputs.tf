@@ -17,3 +17,7 @@ output "netwroking_bucket_name" {
 output "platform_bucket_name" {
   value = module.cloud_storage.platform_bucket_output_name
 }
+
+output "velero_backup_bucket" {
+  value = module.cloud_storage.velero_backup_bucket
+}

@@ -17,3 +17,8 @@ output "networking_bucket_output_name" {
 output "platform_bucket_output_name" {
   value = google_storage_bucket.platform_terraform_state_bucket.name
 }
+
+# Velero buckup bucket
+output "velero_backup_bucket" {
+  value = google_storage_bucket.velero_backup_bucket.name
+}

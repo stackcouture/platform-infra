@@ -121,3 +121,33 @@ resource "google_storage_bucket" "platform_terraform_state_bucket" {
     managed_by  = "terraform"
   }
 }
+
+resource "google_storage_bucket" "velero_backup_bucket" {
+  name          = var.velero_backup_bucket_name
+  location      = var.location
+  storage_class = "STANDARD"
+
+  uniform_bucket_level_access = true
+  force_destroy = false
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    condition {
+      age = 30
+    }
+
+    action {
+      type          = "SetStorageClass"
+      storage_class = "NEARLINE"
+    }
+  }
+
+  labels = {
+    environment = var.environment
+    managed_by  = "terraform"
+    purpose     = "velero-backups"
+  }
+}
