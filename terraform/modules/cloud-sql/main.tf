@@ -19,7 +19,7 @@ resource "google_sql_database_instance" "postgres" {
   settings {
     edition = "ENTERPRISE"
     tier              = var.db_tier
-    availability_type = "REGIONAL"
+    availability_type = "ZONAL"
 
     disk_type       = "PD_SSD"
     disk_size       = 20
@@ -29,11 +29,11 @@ resource "google_sql_database_instance" "postgres" {
 
     backup_configuration {
       enabled                        = true
-      point_in_time_recovery_enabled = true
+      point_in_time_recovery_enabled = false
     }
 
     insights_config {
-      query_insights_enabled = true
+      query_insights_enabled = false
     }
 
     ip_configuration {
