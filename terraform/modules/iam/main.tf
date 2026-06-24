@@ -229,3 +229,9 @@ resource "google_service_account_iam_member" "velero_workload_identity" {
   role               = "roles/iam.workloadIdentityUser"
   member = "serviceAccount:${var.project_id}.svc.id.goog[velero/velero]"
 }
+
+resource "google_storage_bucket_iam_member" "cloudsql_export" {
+  bucket = "stackcouture-velero-backups"
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:p440909314761-gxpqgj@gcp-sa-cloud-sql.iam.gserviceaccount.com"
+}

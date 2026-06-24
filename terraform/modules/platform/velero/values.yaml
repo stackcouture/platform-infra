@@ -1,0 +1,32 @@
+configuration:
+  backupStorageLocation:
+    - name: default
+      provider: gcp
+      bucket: stackcouture-velero-backups
+
+      config:
+        serviceAccount: velero
+
+snapshotsEnabled: false
+
+credentials:
+  useSecret: false
+
+deployNodeAgent: true
+
+serviceAccount:
+  server:
+    create: true
+    name: velero
+    annotations:
+      iam.gke.io/gcp-service-account: velero-gsa@project-18ee516c-a108-431d-a73.iam.gserviceaccount.com
+
+metrics:
+  enabled: true
+
+initContainers:
+  - name: velero-plugin-for-gcp
+    image: velero/velero-plugin-for-gcp:v1.14.1
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
