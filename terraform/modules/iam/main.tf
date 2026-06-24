@@ -205,3 +205,27 @@ resource "google_storage_bucket_iam_member" "github_actions_tf_state" {
   role   = "roles/storage.objectAdmin"
   member = "serviceAccount:github-actions@project-18ee516c-a108-431d-a73.iam.gserviceaccount.com"
 }
+
+# Velero Service Account 
+resource "google_service_account" "velero_gsa" {
+  account_id   = "velero-gsa"
+  display_name = "Velero Backup Service Account"
+}
+
+resource "google_project_iam_member" "velero_storage_admin" {
+  project = var.project_id
+  role    = "roles/storage.admin"
+  member  = "serviceAccount:${google_service_account.velero_gsa.email}"
+}
+
+resource "google_project_iam_member" "velero_compute_storage_admin" {
+  project = var.project_id
+  role    = "roles/compute.storageAdmin"
+  member  = "serviceAccount:${google_service_account.velero_gsa.email}"
+}
+
+resource "google_service_account_iam_member" "velero_workload_identity" {
+  service_account_id = google_service_account.velero_gsa.name
+  role               = "roles/iam.workloadIdentityUser"
+  member = "serviceAccount:${var.project_id}.svc.id.goog[velero/velero]"
+}
