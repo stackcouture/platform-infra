@@ -22,3 +22,8 @@ output "platform_bucket_output_name" {
 output "velero_backup_bucket" {
   value = google_storage_bucket.velero_backup_bucket.name
 }
+
+# Velero buckup bucket
+output "loki_bucket" {
+  value = google_storage_bucket.loki_bucket.name
+}

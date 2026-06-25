@@ -62,3 +62,9 @@ variable "velero_backup_bucket_name" {
   type        = string
   description = "Velero terraform state"
 }
+
+# Loki bucket name
+variable "loki_bucket_name" {
+  description = "GCS bucket used by Loki"
+  type        = string
+}

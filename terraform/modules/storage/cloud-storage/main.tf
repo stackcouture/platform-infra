@@ -151,3 +151,45 @@ resource "google_storage_bucket" "velero_backup_bucket" {
     purpose     = "velero-backups"
   }
 }
+
+resource "google_storage_bucket" "loki_bucket" {
+  name          = var.loki_bucket_name
+  location      = var.location
+  storage_class = "STANDARD"
+
+  uniform_bucket_level_access = true
+  force_destroy               = false
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+
+    condition {
+      age = 30
+    }
+
+    action {
+      type          = "SetStorageClass"
+      storage_class = "NEARLINE"
+    }
+  }
+
+  lifecycle_rule {
+
+    condition {
+      age = 180
+    }
+
+    action {
+      type = "Delete"
+    }
+  }
+
+  labels = {
+    environment = var.environment
+    managed_by  = "terraform"
+    purpose     = "loki-storage"
+  }
+}
