@@ -235,3 +235,22 @@ resource "google_storage_bucket_iam_member" "cloudsql_export" {
   role   = "roles/storage.objectAdmin"
   member = "serviceAccount:p440909314761-gxpqgj@gcp-sa-cloud-sql.iam.gserviceaccount.com"
 }
+
+# Loki Service Account 
+resource "google_service_account" "loki_gsa" {
+  account_id   = "loki-gsa"
+  display_name = "Loki Service Account"
+}
+
+resource "google_storage_bucket_iam_member" "loki_storage" {
+  bucket = "loki-storage-stackcouture"
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.loki_gsa.email}"
+}
+
+resource "google_service_account_iam_member" "loki_workload_identity" {
+  service_account_id = google_service_account.loki_gsa.name
+  role = "roles/iam.workloadIdentityUser"
+  member = "serviceAccount:${var.project_id}.svc.id.goog[logging/loki]"
+}
+
