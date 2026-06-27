@@ -7,4 +7,8 @@ module "artifact_registry" {
   repository_name        = var.repository_name
   repository_description = var.repository_description
   repository_format      = var.repository_format
+
+  platform_repository_name        = var.platform_repository_name
+  platform_repository_description = var.platform_repository_description
+  platform_repository_format      = var.platform_repository_format
 }

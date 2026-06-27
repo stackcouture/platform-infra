@@ -28,3 +28,18 @@ variable "repository_format" {
   type        = string
   description = "Repository format"
 }
+
+variable "platform_repository_name" {
+  type        = string
+  description = "Platform repository name"
+}
+
+variable "platform_repository_description" {
+  type        = string
+  description = "Platform repository for storing docker's"
+}
+
+variable "platform_repository_format" {
+  type        = string
+  description = "Platform repository format"
+}

@@ -22,3 +22,13 @@ resource "google_artifact_registry_repository" "docker_repo" {
     google_project_service.artifact_registry
   ]
 }
+
+resource "google_artifact_registry_repository" "platform_repo" {
+  location      = var.region_name
+  repository_id = var.platform_repository_name
+  description   = var.platform_repository_description
+  format        = var.platform_repository_format
+  depends_on = [
+    google_project_service.artifact_registry
+  ]
+}
