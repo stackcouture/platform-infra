@@ -158,6 +158,13 @@ resource "google_service_account_iam_member" "platform_automation_wif_user" {
   member = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/attribute.repository/stackcouture/platform-automation"
 }
 
+resource "google_service_account_iam_member" "platform_automation_token_creator" {
+  service_account_id = google_service_account.github_actions.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+
+  member = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/attribute.repository/stackcouture/platform-automation"
+}
+
 ###############   Kubecost ##############################
 # GCP Service Account for kubecost 
 resource "google_service_account" "kubecost_gsa" {
