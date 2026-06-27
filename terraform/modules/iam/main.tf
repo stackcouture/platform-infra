@@ -122,7 +122,8 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
 
   attribute_condition = <<EOT
   attribute.repository == "stackcouture/voting-app" ||
-  attribute.repository == "stackcouture/platform-infra"
+  attribute.repository == "stackcouture/platform-infra" ||
+  attribute.repository == "stackcouture/platform-automation"
 EOT
 
   oidc {
@@ -148,6 +149,13 @@ resource "google_service_account_iam_member" "platform_infra_wif_user" {
   role               = "roles/iam.workloadIdentityUser"
 
   member = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/attribute.repository/stackcouture/platform-infra"
+}
+
+resource "google_service_account_iam_member" "platform_automation_wif_user" {
+  service_account_id = google_service_account.github_actions.name
+  role               = "roles/iam.workloadIdentityUser"
+
+  member = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${google_iam_workload_identity_pool.github_pool.workload_identity_pool_id}/attribute.repository/stackcouture/platform-automation"
 }
 
 ###############   Kubecost ##############################
