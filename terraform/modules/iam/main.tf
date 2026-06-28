@@ -317,3 +317,18 @@ resource "google_project_iam_member" "automation_storage_admin" {
   role    = "roles/storage.objectAdmin"
   member  = "serviceAccount:${google_service_account.automation_gsa.email}"
 }
+
+resource "google_artifact_registry_repository_iam_member" "platform_repo_reader" {
+  project    = var.project_id
+  location   = var.region_name
+  repository = data.google_artifact_registry_repository.platform_repo.name
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${google_service_account.gke_nodes.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "slack_webhook_access" {
+  project   = var.project_id
+  secret_id = "slack-webhook"
+  role   = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:${google_service_account.automation_gsa.email}"
+}
