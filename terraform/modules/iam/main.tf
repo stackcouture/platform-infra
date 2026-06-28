@@ -332,3 +332,9 @@ resource "google_secret_manager_secret_iam_member" "slack_webhook_access" {
   role   = "roles/secretmanager.secretAccessor"
   member = "serviceAccount:${google_service_account.automation_gsa.email}"
 }
+
+resource "google_storage_bucket_iam_member" "reports_writer" {
+  bucket = data.google_storage_bucket.reports.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.automation_gsa.email}"
+}
