@@ -25,3 +25,7 @@ output "velero_backup_bucket" {
 output "loki_bucket" {
   value = module.cloud_storage.loki_bucket
 }
+
+output "platform_bucket" {
+  value = module.cloud_storage.platform_bucket
+}

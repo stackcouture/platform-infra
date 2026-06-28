@@ -193,3 +193,23 @@ resource "google_storage_bucket" "loki_bucket" {
     purpose     = "loki-storage"
   }
 }
+
+resource "google_storage_bucket" "platform_reports" {
+  name                        = "platform-reports-${var.project_id}"
+  location                    = var.location
+  uniform_bucket_level_access = true
+
+  versioning {
+    enabled = false
+  }
+
+  lifecycle_rule {
+    action {
+      type = "Delete"
+    }
+
+    condition {
+      age = 90
+    }
+  }
+}

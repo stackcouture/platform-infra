@@ -53,3 +53,8 @@ variable "loki_bucket_name" {
   description = "GCS bucket used by Loki"
   type        = string
 }
+
+variable "project_id" {
+  type = string 
+  description = "Project ID"
+}

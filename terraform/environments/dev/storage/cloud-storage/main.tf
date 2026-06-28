@@ -10,4 +10,5 @@ module "cloud_storage" {
   platform_terraform_state  = var.platform_terraform_state
   velero_backup_bucket_name = var.velero_backup_bucket_name
   loki_bucket_name          = var.loki_bucket_name
+  project_id                = var.project_id
 }
