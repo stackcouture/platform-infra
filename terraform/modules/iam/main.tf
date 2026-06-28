@@ -41,6 +41,12 @@ resource "google_artifact_registry_repository_iam_member" "repo_reader" {
   member     = "serviceAccount:${google_service_account.gke_nodes.email}"
 }
 
+resource "google_project_iam_member" "gke_node_artifact_registry_reader" {
+  project = var.project_id
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:${google_service_account.gke_nodes.email}"
+}
+
 # Service Account for Secrets 
 resource "google_service_account" "eso_gsa" {
   account_id   = "eso-gsa"
@@ -269,3 +275,45 @@ resource "google_service_account_iam_member" "loki_workload_identity" {
   member = "serviceAccount:${var.project_id}.svc.id.goog[logging/loki]"
 }
 
+# Automation Service Account
+resource "google_service_account" "automation_gsa" {
+  account_id   = "automation-sa"
+  display_name = "Platform Automation Service Account"
+}
+
+resource "google_project_iam_member" "automation_container_viewer" {
+  project = var.project_id
+  role    = "roles/container.viewer"
+  member  = "serviceAccount:${google_service_account.automation_gsa.email}"
+}
+
+resource "google_project_iam_member" "automation_monitoring_viewer" {
+  project = var.project_id
+  role    = "roles/monitoring.viewer"
+  member  = "serviceAccount:${google_service_account.automation_gsa.email}"
+}
+
+resource "google_project_iam_member" "automation_logging_viewer" {
+  project = var.project_id
+  role    = "roles/logging.viewer"
+  member  = "serviceAccount:${google_service_account.automation_gsa.email}"
+}
+
+resource "google_service_account_iam_member" "automation_workload_identity" {
+  service_account_id = google_service_account.automation_gsa.name
+  role               = "roles/iam.workloadIdentityUser"
+
+  member = "serviceAccount:${var.project_id}.svc.id.goog[automation/automation-sa]"
+}
+
+resource "google_project_iam_member" "automation_secret_accessor" {
+  project = var.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.automation_gsa.email}"
+}
+
+resource "google_project_iam_member" "automation_storage_admin" {
+  project = var.project_id
+  role    = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${google_service_account.automation_gsa.email}"
+}
