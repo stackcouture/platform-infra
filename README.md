@@ -432,6 +432,92 @@ The infrastructure is built using industry-standard cloud-native technologies to
 | **Repository Hosting** | GitHub | Infrastructure source repository |
 
 ---
+## Prerequisites
+
+Before deploying the infrastructure, ensure the following prerequisites are met.
+
+### Google Cloud Platform
+
+- Google Cloud project
+- Billing account enabled
+- Owner or Project Editor permissions
+- Required GCP APIs enabled:
+  - Compute Engine API
+  - Kubernetes Engine API
+  - Artifact Registry API
+  - Cloud Resource Manager API
+  - Identity and Access Management (IAM) API
+  - IAM Credentials API
+  - Service Usage API
+  - Cloud Storage API
+  - Secret Manager API
+  - SQL Admin API
+  - Service Networking API
+
+### Local Tools
+
+| Tool | Version |
+|-------|---------|
+| Terraform | >= 1.8 |
+| Google Cloud CLI | Latest |
+| kubectl | Compatible with the GKE cluster version |
+| Git | Latest |
+
+### Authentication
+
+Authenticate with Google Cloud:
+
+```bash
+gcloud auth login
+```
+
+Set the target project:
+
+```bash
+gcloud config set project <PROJECT_ID>
+```
+
+Configure Application Default Credentials:
+
+```bash
+gcloud auth application-default login
+```
+
+### Terraform Remote State
+
+Create a Google Cloud Storage (GCS) bucket for the Terraform backend before the initial deployment.
+
+Example:
+
+```bash
+gsutil mb -l asia-south1 gs://<terraform-state-bucket>
+```
+
+### GitHub
+
+- GitHub account
+- Repository access
+- GitHub Actions enabled (optional for CI/CD)
+
+### Required Permissions
+
+The authenticated identity should have permissions to create and manage:
+
+- VPC Networks
+- Subnets
+- Cloud Router
+- Cloud NAT
+- Firewall Rules
+- GKE Clusters
+- Node Pools
+- Artifact Registry
+- Cloud Storage Buckets
+- Cloud SQL Instances
+- IAM Roles and Service Accounts
+- Workload Identity Federation
+- Secret Manager resources
+
+---
 ## Modules In Detail
 
 ### 📦 Module: `networking`
