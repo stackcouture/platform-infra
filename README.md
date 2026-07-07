@@ -294,79 +294,69 @@ platform-infra/
                   └── outputs.tf
 ```
 ---
-## Scope
-
-This repository is responsible for provisioning and managing the cloud infrastructure required by the platform, including:
-
-- Virtual Private Cloud (VPC)
-- Private networking
-- Regional Google Kubernetes Engine (GKE) cluster
-- Node pool configuration
-- Google Artifact Registry
-- Cloud Storage resources
-- Identity and Access Management (IAM)
-- Service Accounts
-- Workload Identity Federation
-- Terraform remote state backend
-- Supporting networking resources
-
-Platform services such as `Argo CD, Argo Rollouts, Monitoring, External-secrets, Falco, Keda, Kubecost, Kyverno, vault, Velero, Gateway-api, Policy enforcement(Kyverno), and application workloads` are managed independently after the infrastructure has been provisioned.
-
----
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│            Google Cloud Platform  (asia-south1)             │
-│                                                             │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │           VPC  (module: networking)                  │   │
-│  │                                                      │   │
-│  │     ┌─────────────────────────┐                      │   │
-│  │     │     Private Subnet      │                      │   │
-│  │     │  (asia-south1)          │                      │   │
-│  │     │                         │                      │   │
-│  │     │  ┌────────────────────┐ │                      │   │
-│  │     │  | GKE Node Pool      │ │                      │   │
-│  │     │  │   (module: gke)    │ │                      │   │
-│  │     │  └────────────────────┘ │                      │   │
-│  │     └─────────────────────────┘                      │   │
-│  │                                                      │   │
-│  │   ┌──────────────────────────────────────────────┐   │   │
-│  │   │   GKE Control Plane  (Google Managed)        │   │   │
-│  │   └──────────────────────────────────────────────┘   │   │
-│  └──────────────────────────────────────────────────────┘   │
-│                                                             │
-│  ┌──────────────────────┐   ┌───────────────────┐           │
-│  │   Artifact Registry  │   │   Cloud Storage   │           │
-│  │  (module: artifact-  │   │   (module: cloud- │           │
-│  │   registry)          │   │    storage)       │           │
-│  │  Docker image store  │   │  Terraform state  │           │
-│  └──────────────────────┘   └───────────────────┘           │
-│                                                             │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │                    IAM  (module: iam)                 │  │
-│  │ GKE SA │ Artifact Registry SA │ GitHub Actions WIF SA │  │
-│  └───────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-                            │
-                            │  kubectl / ArgoCD sync
-                            ▼
-                ┌───────────────────────┐
-                │  ArgoCD (in-cluster)  │
-                │  Watches gitops-      │
-                │  microservices-       │
-                │  platform repo        │
-                └───────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────────────────────────┐
+│                     Google Cloud Platform (Region: asia-south1)                               │
+│                                                                                               │
+│  ┌─────────────────────────────────────────────────────────────────────────────────────────┐  │
+│  │                            VPC (Terraform Module: networking)                           │  │
+│  │                                                                                         │  │
+│  │   Private Subnet (asia-south1)                                                          │  │
+│  │                                                                                         │  │
+│  │   ┌──────────────────────────────────┐                                                  │  │
+│  │   │ Regional GKE Cluster             │                                                  │  │
+│  │   │ (Terraform Module: gke)          │                                                  │  │
+│  │   │                                  │                                                  │  │
+│  │   │  • Control Plane (Google Managed)|                                                  │  │
+│  │   │  • Gateway API Enabled           |                                                  │  │
+│  │   │  • Workload Identity Enabled     |                                                  │  │
+│  │   └──────────────────────────────────┘                                                  │  │
+│  │                                                                                         │  │
+│  │      ┌────────────┐   ┌────────────┐   ┌────────────┐                                   │  │
+│  │      │System Pool │   │ App Pool   │   │ Data Pool  │                                   │  │
+│  │      │ArgoCD      │   │Vote        │   │PostgreSQL  │                                   │  │
+│  │      │Monitoring  │   │Result      │   │Redis       │                                   │  │
+│  │      │Kyverno     │   │Worker      │   │PVCs        │                                   │  │
+│  │      └────────────┘   └────────────┘   └────────────┘                                   │  │
+│  │                                                                                         │  │
+│  │ Cloud NAT │ Cloud Router │ Firewall Rules │ Private Google Access                       │  │
+│  └─────────────────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                               │
+│  ┌──────────────────────┐    ┌──────────────────────┐    ┌─────────────────────────────┐      │
+│  │ Artifact Registry    │    │ Cloud Storage        │    │ Secret Manager              │      │
+│  │ Docker Images        │    │ Terraform State      │    │ External Secrets            │      │
+│  └──────────────────────┘    └──────────────────────┘    └─────────────────────────────┘      │
+│                                                                                               │
+│  ┌─────────────────────────────────────────────────────────────────────────────────────────┐  │
+│  │ IAM (Terraform Module: platform-iam)                                                    │  │
+│  │                                                                                         │  │
+│  │ • GKE Service Accounts                                                                  │  │
+│  │ • GitHub Actions Workload Identity Federation                                           │  │
+│  │ • Artifact Registry Access                                                              │  │
+│  │ • GCS Backend Access                                                                    │  │
+│  └─────────────────────────────────────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────────────────────────────────────┘
+                                           
 ```
-**Data flow:**
-1. `networking` module creates the VPC, subnets, Cloud Router, and Cloud NAT
-2. `gke` module provisions the cluster and node pool inside the private subnet
-3. `artifact-registry` module creates the Docker registry for storing app images
-4. `iam` module provisions service accounts and binds roles for GKE nodes, CI pipelines, and GitHub Actions
-5. `cloud-storage` module creates a GCS bucket used as Terraform remote state backend
-6. `cloud-sql` module creates the Postgres Managed service
-7. `platform-services`
+### Infrastructure Provisioning Flow
+
+1. **`networking`** provisions the networking foundation, including the VPC, private subnet, Cloud Router, Cloud NAT, firewall rules, and Private Google Access.
+
+2. **`gke`** creates the regional Google Kubernetes Engine (GKE) cluster with dedicated node pools, Workload Identity, and Gateway API enabled.
+
+3. **`artifact-registry`** creates the Artifact Registry repositories used to store and distribute container images built by the CI pipeline.
+
+4. **`platform-iam`** provisions service accounts, IAM roles, and Workload Identity Federation required for GKE, Terraform, GitHub Actions, and platform services.
+
+5. **`cloud-storage`** creates the Google Cloud Storage (GCS) bucket used as the Terraform remote state backend.
+
+6. **`cloud-sql`** provisions a managed PostgreSQL instance, including private connectivity, database configuration, users, and automated backups.
+
+7. **`platform-services`** deploys the core Kubernetes platform services required to operate the cluster, including Argo CD, External Secrets, NGINX Gateway Fabric, cert-manager, Kyverno, kube-prometheus-stack, Kubecost, Argo Rollouts, and other shared platform components.
+
+8. After the infrastructure and platform services are deployed, **Argo CD** continuously synchronizes application manifests from the GitOps repository, ensuring the cluster remains in the desired state.
 
 ---
 ## Infrastructure Components
@@ -423,6 +413,25 @@ Integrates Google Secret Manager to centrally manage sensitive configuration val
 
 ---
 
+## Technology Stack
+
+The infrastructure is built using industry-standard cloud-native technologies to provision, manage, and operate a production-ready Kubernetes platform on Google Cloud Platform.
+
+| Category | Technology | Purpose |
+|----------|------------|---------|
+| **Cloud Provider** | Google Cloud Platform (GCP) | Cloud infrastructure platform |
+| **Infrastructure as Code** | Terraform | Infrastructure provisioning and lifecycle management |
+| **State Management** | Google Cloud Storage (GCS) | Remote Terraform state backend |
+| **Container Platform** | Google Kubernetes Engine (GKE) | Managed Kubernetes cluster |
+| **Container Registry** | Artifact Registry | Docker image repository |
+| **Database** | Cloud SQL for PostgreSQL | Managed PostgreSQL database |
+| **Networking** | VPC, Private Subnets, Cloud Router, Cloud NAT | Secure network architecture |
+| **Identity & Access Management** | IAM, Service Accounts, Workload Identity Federation | Authentication and authorization |
+| **Secrets Management** | Secret Manager | Secure storage for application secrets |
+| **Version Control** | Git | Source code management |
+| **Repository Hosting** | GitHub | Infrastructure source repository |
+
+---
 ## Modules In Detail
 
 ### 📦 Module: `networking`
