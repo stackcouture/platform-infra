@@ -1,24 +1,4 @@
-# platform-infra
-
-Infrastructure as Code (IaC) for the [platform-engineering-portfolio](https://github.com/stackcouture/platform-engineering-portfolio) project. This repository provisions and manages the complete **Google Cloud Platform (GCP)** infrastructure required to run a GitOps-driven microservices platform — including VPC networking, a GKE Kubernetes cluster, Artifact Registry, IAM service accounts, and Cloud Storage — using **Terraform** with a reusable modules-based structure.
-
----
-## Table of Contents
-
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Folder Structure](#folder-structure)
-- [Modules In Detail](#modules-in-detail)
-  - [networking](#-module-networking)
-  - [gke](#-module-gke)
-  - [artifact-registry](#-module-artifact-registry)
-  - [iam](#-module-iam)
-  - [cloud-storage](#-module-cloud-storage)
-- [Root-Level Files](#root-level-files)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-- [How to run (demo)](#how-to-run-demo)
-
+# Platform infrastrucuture
 
 ---
 
@@ -43,6 +23,276 @@ The primary objectives of this repository are to:
 - Support production-oriented operational practices
 - Maintain infrastructure consistency across environments
 
+---
+
+## Repository Structure
+
+```
+platform-infra/
+└── terraform/
+    ├── environments                      
+    |   |
+    |   ├── dev    
+    |   |    ├── networking/
+    |   |    |      ├── .gitignore
+    |   │    |      ├── main.tf
+    |   |    |      ├── outputs.tf
+    |   |    |      ├── provider.tf 
+    |   |    |      ├── terraform.tfvars
+    |   │    |      └── variables.tf
+    |   │    |
+    |   |    ├── cloud-sql/
+    |   |    |      ├── .gitignore
+    |   │    |      ├── main.tf
+    |   |    |      ├── outputs.tf
+    |   |    |      ├── provider.tf 
+    |   |    |      ├── terraform.tfvars
+    |   │    |      └── variables.tf
+    |   │    |
+    |   |    ├── gke/
+    |   |    |      ├── .gitignore
+    |   │    |      ├── main.tf
+    |   |    |      ├── outputs.tf
+    |   |    |      ├── provider.tf 
+    |   |    |      ├── terraform.tfvars
+    |   │    |      └── variables.tf
+    |   │    |
+    |   |    ├── iam/   
+    |   |    |      ├── .gitignore
+    |   │    |      ├── main.tf
+    |   |    |      ├── outputs.tf
+    |   |    |      ├── provider.tf 
+    |   │    |      └── variables.tf
+    |   │    |
+    |   │    ├── platform/
+    |   |    |        ├── argo-rollouts/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── cert-manager/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── argo-rollouts/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── external-secrets/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── falco/ 
+    |   |    |        |         ├── .gitignore
+    |   |    |        |         ├── backend.tf
+    |   |    |        |         ├── data.tf  
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── keda/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── kubecost/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── kyverno/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── monitoring/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── nginx-gateway/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── reloader/ 
+    |   |    |        |         ├── .gitignore
+    |   |    |        |         ├── backend.tf
+    |   |    |        |         ├── data.tf  
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── storage-classes/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── vault/ 
+    |   |    |        |         ├── .gitignore
+    |   |    |        |         ├── backend.tf
+    |   |    |        |         ├── data.tf  
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        └── velero/
+    |   |    |                  ├── .gitignore
+    |   |    |                  ├── backend.tf
+    |   |    |                  ├── data.tf  
+    |   │    |                  ├── main.tf
+    |   |    |                  ├── outputs.tf
+    |   |    |                  ├── provider.tf
+    |   |    |                  ├── versions.tf 
+    |   │    |                  └── variables.tf
+    |   |    |        
+    |   │    ├── storage/
+    |   |    |        ├── artifact-registry/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf 
+    |   │    |        |         └── variables.tf
+    |   │    |        |
+    |   |    |        └── cloud-storage/
+    |   |    |                  ├── .gitignore
+    |   │    |                  ├── main.tf
+    |   |    |                  ├── outputs.tf
+    |   |    |                  ├── provider.tf 
+    |   │    |                  └── variables.tf
+    |   |
+    |   └── prod
+    │
+    └── modules/
+        │
+        ├── cloud-sql/              # Postgres SQL 
+        │   ├── main.tf
+        │   ├── variables.tf
+        │   └── outputs.tf
+        |
+        ├── networking/              # VPC, subnets, firewall rules
+        │   ├── main.tf
+        │   ├── variables.tf
+        │   └── outputs.tf
+        │
+        ├── gke/                     # GKE cluster, node pool, cluster autoscaler
+        │   ├── main.tf
+        │   ├── variables.tf
+        │   └── outputs.tf
+        │
+        ├── iam/                     # Service accounts, IAM role bindings, Workload Identity
+        │   ├── main.tf
+        │   ├── variables.tf
+        │   └── outputs.tf
+        |
+        ├── platform/
+        |   ├── argo-rollouts/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── argocd/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── cert-manager/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── external-secrets/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── falco/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── keda/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── kubecost/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── kyverno/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── monitoring/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── nginx-gateway/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── reloader/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── storage-classes/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── vault/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        │   │
+        |   └── velero/           
+        |          ├── main.tf
+        |          ├── variables.tf
+        |          └── outputs.tf
+        |
+        ├── storage/
+        |   └── artifact-registry/       # Artifact Registry Docker repository
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        │   │
+            └── cloud-storage/           # GCS bucket for Terraform remote state & artefacts
+                  ├── main.tf
+                  ├── variables.tf
+                  └── outputs.tf
+```
 ---
 ## Scope
 
@@ -172,75 +422,7 @@ Provisions Cloud Storage buckets used for Terraform remote state management and 
 Integrates Google Secret Manager to centrally manage sensitive configuration values, API keys, credentials, and certificates required by infrastructure and platform services. Secrets remain external to source control and are securely consumed by workloads through platform integrations.
 
 ---
-## Folder Structure
 
-```
-platform-infra/
-└── terraform/
-    ├── environments                      
-    |   |
-    |   ├── dev    
-    |   |    ├── networking/
-    |   |    |      ├── .gitignore
-    |   │    |      ├── main.tf
-    |   |    |      ├── outputs.tf
-    |   |    |      ├── provider.tf 
-    |   │    |      └── variables.tf
-    |   |    ├── gke/
-    |   |    |      ├── .gitignore
-    |   │    |      ├── main.tf
-    |   |    |      ├── outputs.tf
-    |   |    |      ├── provider.tf 
-    |   │    |      └── variables.tf
-    |   |    ├── artifact-registry/ 
-    |   |    |      ├── .gitignore
-    |   │    |      ├── main.tf
-    |   |    |      ├── outputs.tf
-    |   |    |      ├── provider.tf 
-    |   │    |      └── variables.tf
-    |   |    ├── iam/   
-    |   |    |      ├── .gitignore
-    |   │    |      ├── main.tf
-    |   |    |      ├── outputs.tf
-    |   |    |      ├── provider.tf 
-    |   │    |      └── variables.tf
-    |   |    └── cloud-storage/
-    |   |    |      ├── .gitignore
-    |   │    |      ├── main.tf
-    |   |    |      ├── outputs.tf
-    |   |    |      ├── provider.tf 
-    |   │    |      └── variables.tf
-    |   |
-    |   └── prod
-    │
-    └── modules/
-        │
-        ├── networking/              # VPC, subnets, firewall rules
-        │   ├── main.tf
-        │   ├── variables.tf
-        │   └── outputs.tf
-        │
-        ├── gke/                     # GKE cluster, node pool, cluster autoscaler
-        │   ├── main.tf
-        │   ├── variables.tf
-        │   └── outputs.tf
-        │
-        ├── artifact-registry/       # Artifact Registry Docker repository
-        │   ├── main.tf
-        │   ├── variables.tf
-        │   └── outputs.tf
-        │
-        ├── iam/                     # Service accounts, IAM role bindings, Workload Identity
-        │   ├── main.tf
-        │   ├── variables.tf
-        │   └── outputs.tf
-        │
-        └── cloud-storage/           # GCS bucket for Terraform remote state & artefacts
-            ├── main.tf
-            ├── variables.tf
-            └── outputs.tf
-```
----
 ## Modules In Detail
 
 ### 📦 Module: `networking`

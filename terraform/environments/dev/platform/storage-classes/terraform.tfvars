@@ -1,0 +1,1 @@
+region_name = "asia-south1"
