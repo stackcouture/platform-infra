@@ -518,6 +518,100 @@ The authenticated identity should have permissions to create and manage:
 - Secret Manager resources
 
 ---
+## Getting Started
+
+This repository uses a modular Terraform architecture. Each directory under `terraform/environments/dev` represents an independent Terraform root module responsible for provisioning a specific infrastructure component.
+
+Deploy the modules in the following order to satisfy infrastructure dependencies.
+
+```text
+terraform/environments/dev/
+├── networking
+├── artifact-registry
+├── cloud-storage
+├── iam
+├── cloud-sql
+├── gke
+└── platform-services
+    ├── argocd
+    ├── external-secrets
+    ├── cert-manager
+    ├── gateway-api
+    ├── kyverno
+    ├── monitoring
+    ├── kubecost
+    └── argo-rollouts
+```
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/stackcouture/platform-infra.git
+cd platform-infra
+```
+
+### 2. Authenticate with Google Cloud
+
+```bash
+gcloud auth login
+
+gcloud config set project <PROJECT_ID>
+
+gcloud auth application-default login
+```
+
+### 3. Deploy Infrastructure Modules
+
+Navigate to each module directory and execute the standard Terraform workflow.
+
+Example:
+
+```bash
+cd terraform/environments/dev/networking
+
+terraform init
+terraform validate
+terraform plan
+terraform apply
+```
+
+Repeat the same process for every module in the recommended deployment order.
+
+## Deployment Order
+
+| Order | Module | Description |
+|------:|--------|-------------|
+| 1 | `networking` | Creates the VPC, private subnet, Cloud Router, Cloud NAT, firewall rules, and networking resources. |
+| 2 | `artifact-registry` | Creates Artifact Registry repositories for container images. |
+| 3 | `cloud-storage` | Creates the Google Cloud Storage bucket for Terraform remote state. |
+| 4 | `iam` | Creates service accounts, IAM roles, and Workload Identity Federation. |
+| 5 | `cloud-sql` | Provisions the managed PostgreSQL database. |
+| 6 | `gke` | Creates the regional GKE cluster and dedicated node pools. |
+| 7 | `platform-services/argocd` | Deploys Argo CD. |
+| 8 | `platform-services/external-secrets` | Deploys External Secrets Operator. |
+| 9 | `platform-services/cert-manager` | Deploys cert-manager. |
+| 10 | `platform-services/gateway-api` | Deploys NGINX Gateway Fabric. |
+| 11 | `platform-services/kyverno` | Deploys Kyverno policies. |
+| 12 | `platform-services/monitoring` | Deploys Prometheus, Grafana, and Alertmanager. |
+| 13 | `platform-services/kubecost` | Deploys Kubecost for cost monitoring. |
+| 14 | `platform-services/argo-rollouts` | Deploys Argo Rollouts for progressive delivery. |
+
+### 4. Verify the GKE Cluster
+
+Retrieve the cluster credentials.
+
+```bash
+gcloud container clusters get-credentials <CLUSTER_NAME> \
+  --region asia-south1
+```
+
+Verify the cluster.
+
+```bash
+kubectl get nodes
+```
+
+---
 ## Modules In Detail
 
 ### 📦 Module: `networking`
