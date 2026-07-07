@@ -124,12 +124,14 @@ Platform services such as `Argo CD, Argo Rollouts, Monitoring, External-secrets,
 ### Networking
 
 Establishes the networking foundation for the platform by provisioning a dedicated Virtual Private Cloud (VPC), subnets, routing, firewall rules, Cloud Router, and Cloud NAT. The networking architecture enables secure communication between Google Cloud services while supporting private connectivity for platform components and managed services.
+
 ---
 ### Google Kubernetes Engine
 
 Provisions a regional Google Kubernetes Engine (GKE) cluster that serves as the runtime environment for the platform. The cluster is configured with dedicated node pools to isolate system services, platform components, and application workloads, enabling scalable and resilient Kubernetes operations.
 
 The infrastructure provides the foundation for deploying platform services and applications through a GitOps workflow.
+
 ---
 ### Platform Workloads
 
