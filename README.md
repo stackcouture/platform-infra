@@ -612,6 +612,97 @@ kubectl get nodes
 ```
 
 ---
+
+## Deployment Workflow
+
+The infrastructure is provisioned using a modular Terraform architecture. Each module is deployed independently in the recommended order to satisfy resource dependencies. Once the infrastructure is ready, GitOps is used to deploy and manage Kubernetes platform services and applications.
+
+```text
+┌──────────────────────┐
+│ Clone Repository     │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ Configure GCP        │
+│ Authentication       │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ Networking           │
+│ VPC, Subnets, NAT    │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ Artifact Registry    │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ Cloud Storage        │
+│ Terraform Backend    │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ IAM                  │
+│ Service Accounts     │
+│ Workload Identity    │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ Cloud SQL            │
+│ PostgreSQL           │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ Google Kubernetes    │
+│ Engine (GKE)         │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ Platform Services    │
+│ Argo CD              │
+│ External Secrets     │
+│ cert-manager         │
+│ Gateway API          │
+│ Kyverno              │
+│ Monitoring           │
+│ Kubecost             │
+│ Argo Rollouts        │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ GitOps Repository    │
+│ Application Sync     │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ Production Platform  │
+└──────────────────────┘
+```
+
+### Workflow Summary
+
+1. Configure Google Cloud authentication and initialize Terraform.
+2. Provision the networking foundation.
+3. Create Artifact Registry repositories and the Terraform remote state bucket.
+4. Configure IAM, service accounts, and Workload Identity Federation.
+5. Provision the Cloud SQL PostgreSQL instance.
+6. Deploy the regional GKE cluster and dedicated node pools.
+7. Install the Kubernetes platform services using Terraform.
+8. Bootstrap Argo CD.
+9. Synchronize the GitOps repository.
+10. Deploy and continuously reconcile application workloads.
+
+---
 ## Modules In Detail
 
 ### 📦 Module: `networking`
