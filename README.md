@@ -703,229 +703,77 @@ The infrastructure is provisioned using a modular Terraform architecture. Each m
 10. Deploy and continuously reconcile application workloads.
 
 ---
-## Modules In Detail
 
-### 📦 Module: `networking`
+## Learning Outcomes
 
-**Path:** `terraform/modules/networking/`
+Building this infrastructure provided hands-on experience in designing, provisioning, and managing production-grade cloud infrastructure on Google Cloud Platform using Infrastructure as Code (IaC).
 
-Provisions the complete GCP network stack that the GKE cluster and other services run inside.
+During the implementation, I gained practical experience in:
 
-**What it creates:**
+### Infrastructure as Code
 
-| Resource      | Details                                                                       |
-|---------------|-------------------------------------------------------------------------------|
-| VPC Network   | Custom mode VPC — no auto-created subnets                                     |
-| Private Subnet| For GKE nodes — `asia-south1`, with secondary IP ranges for Pods and Services |
-| Firewall Rules | Allow internal cluster traffic; deny unauthorised external access            |
+- Designing reusable and modular Terraform configurations
+- Organizing infrastructure into independent Terraform root modules
+- Managing Terraform state using a remote Google Cloud Storage backend
+- Consuming remote state outputs across infrastructure modules
+- Managing infrastructure lifecycle using Terraform plan, apply, and destroy workflows
 
+### Google Cloud Platform
 
----
-### 📦 Module: `gke`
+- Designing secure VPC networking for Kubernetes workloads
+- Configuring private subnets, Cloud Router, and Cloud NAT
+- Provisioning regional Google Kubernetes Engine (GKE) clusters
+- Creating dedicated node pools for system, application, and data workloads
+- Managing Artifact Registry repositories for container images
+- Provisioning Cloud SQL for PostgreSQL
+- Configuring Google Cloud Storage for Terraform state management
 
-**Path:** `terraform/modules/gke/`
+### Identity and Access Management
 
-Provisions a private GKE cluster with a managed node pool. GKE nodes run inside the private subnet with no public IP addresses. Access to the Kubernetes API server is restricted to authorised networks.
+- Creating least-privilege IAM roles and service accounts
+- Configuring Workload Identity Federation for GitHub Actions
+- Managing workload authentication without long-lived service account keys
+- Implementing secure access to Google Cloud resources
 
-**What it creates:**
+### Platform Foundation
 
-| Resource          | Details                                                  |
-|-------------------|----------------------------------------------------------|
-| GKE Cluster       | Private cluster; master authorised networks configured   |
-| Default Node Pool | Removed immediately (replaced by custom node pool)       |
-| Custom Node Pool  | Auto-scaling node pool in the private subnet             |
-| Workload Identity | Binds GCP service accounts to Kubernetes service accounts|
-| Cluster Autoscaler| Scales nodes up/down based on pod demand                 |
+- Deploying Kubernetes platform services using Terraform
+- Managing Argo CD, cert-manager, External Secrets, Gateway API, Kyverno, Prometheus, Grafana, Kubecost, and Argo Rollouts
+- Understanding the dependency order between infrastructure components and platform services
+- Establishing a reusable foundation for GitOps-based application deployment
 
+### Architecture & Best Practices
 
-**Key outputs:**
-- `cluster_name` — used for `gcloud container clusters get-credentials`
-- `cluster_endpoint` — Kubernetes API server endpoint
-- `cluster_ca_certificate` — used for authenticating kubectl
-
----
-### 📦 Module: `artifact-registry`
-
-**Path:** `terraform/modules/artifact-registry/`
-
-Provisions a private Docker container registry in GCP Artifact Registry. All application container images built by the `voting-app` CI pipeline are pushed here and pulled by GKE nodes.
-
-**What it creates:**
-
-| Resource | Details |
-|----------|---------|
-| Artifact Registry Repository | Docker format, private, in `asia-south1` |
-| IAM Bindings | GKE node service account granted `artifactregistry.reader` role |
-| IAM Bindings | CI/CD service account granted `artifactregistry.writer` role |
-
-
-**Key outputs:**
-- `repository_url` — full Docker registry URL (e.g. `asia-south1-docker.pkg.dev/<project>/gitops-platform-registry`)
-  Used in CI workflows to push and pull images
-
----
-### 📦 Module: `iam`
-
-**Path:** `terraform/modules/iam/`
-
-Manages all GCP service accounts and IAM role bindings for the platform. Follows the principle of least privilege — each service account only has the permissions it needs.
-
-**What it creates:**
-
-| Resource                    | Details                                                    |
-|-----------------------------|------------------------------------------------------------|
-| GKE Node Service Account    | Used by GKE worker nodes; `logging.logWriter`,             |
-|                             |  `monitoring.metricWriter`, `artifactregistry.reader`      | 
-| CI/CD Service Account       | Used by GitHub Actions; `artifactregistry.writer`,         |
-|                             | `container.developer`                                      |
-| Workload Identity Binding   | Maps the CI/CD GCP SA to a Kubernetes SA for keyless auth  |
-| GitHub Actions WIF Provider | Workload Identity Federation — allows GitHub Actions to    |
-|                             |  authenticate without a key file                           |
-| IAM Role Bindings           | Scoped role bindings for each service account              |
-
-**Key variables:**
-
-```hcl
-variable "project_id"         {}
-variable "project_number"     {}
-variable "gke_sa_name"        {}
-variable "ci_sa_name"         {}
-variable "github_org"         {}
-variable "github_repo"        {}
-```
-
-**Key outputs:**
-- `gke_node_sa_email` — attached to the GKE node pool (consumed by `gke` module)
-- `ci_sa_email` — used by GitHub Actions workflows for image push
-- `workload_identity_provider` — full WIF provider resource name for GitHub Actions
-
----
-### 📦 Module: `cloud-storage`
-
-**Path:** `terraform/modules/cloud-storage/`
-
-Provisions a GCS (Google Cloud Storage) bucket used as the Terraform remote state backend. This ensures state is stored securely, remotely, and supports state locking to prevent concurrent applies.
-
-**What it creates:**
-
-| Resource          | Details                                                                 |
-|-------------------|-------------------------------------------------------------------------|
-| GCS Bucket        | Versioning enabled, uniform bucket-level access, `asia-south1`          |
-| Bucket Versioning | Retains previous state file versions for rollback                       |
-| Lifecycle Rules   | Cleans up old non-current state versions after a configurable retention |
-|                   | period                                                                  |
-| IAM Binding       | Grants the CI/CD service account access to read/write state             |
-
-**Key variables:**
-
-```hcl
-variable "project_id"         {}
-variable "region"             {}
-variable "bucket_name"        {}
-variable "retention_days"     {}
-```
-
-**Key outputs:**
-- `bucket_name` — referenced in `backend.tf` as the remote state bucket
+- Designing a modular and scalable infrastructure architecture
+- Separating infrastructure provisioning from application deployment
+- Following Infrastructure as Code best practices for maintainability and reusability
+- Documenting infrastructure using production-grade repository standards
 
 ---
 
-## How to run (demo)
+## Module Documentation
 
-This repo provisions the **GCP infrastructure layer**. Apply Terraform first, then bootstrap Argo CD from the GitOps repo to install platform services and deploy applications.
+The infrastructure is organized into independent Terraform root modules. Each module is responsible for provisioning a specific layer of the platform while maintaining clear separation of concerns.
 
-> **Note:** Use a dedicated GCP project for demo/testing. Terraform will create billable resources (GKE, Cloud SQL, load balancers, etc.).
-
-### Prerequisites
-
-- **GCP**
-  - A GCP project with billing enabled
-  - Permissions to create VPC, GKE, IAM, Artifact Registry, Cloud SQL, and GCS
-- **CLI tools**
-  - `gcloud`
-  - `terraform`
-  - `kubectl`
-- **Authentication**
-
-```bash
-gcloud auth login
-gcloud auth application-default login
-gcloud config set project <PROJECT_ID>
-gcloud config set compute/region <REGION>
-```
-
-
-
-### Provision order (Terraform)
-
-Apply stacks in this order to satisfy dependencies.
-
-> Paths below assume you run commands from the repo root.
-
-1) **networking**
-
-```bash
-cd terraform/environments/dev/networking
-terraform init
-terraform apply
-```
-
-2) **iam**
-
-```bash
-cd ../iam
-terraform init
-terraform apply
-```
-
-3) **gke**
-
-```bash
-cd ../gke
-terraform init
-terraform apply
-```
-
-4) **artifact-registry**
-
-```bash
-cd ../artifact-registry
-terraform init
-terraform apply
-```
-
-5) **cloud-sql** and **storage**
-
-```bash
-cd ../cloud-sql
-terraform init
-terraform apply
-
-cd ../storage/cloud-storage
-terraform init
-terraform apply
-```
-
-### Configure kubectl for GKE
-
-```bash
-gcloud container clusters get-credentials <CLUSTER_NAME> --region <REGION> --project <PROJECT_ID>
-kubectl get nodes
-```
-
-### GitOps bootstrap (Argo CD)
-
-After the cluster is ready, bootstrap Argo CD and apply the GitOps configuration from:
-
-- `https://github.com/stackcouture/gitops-microservices-platform`
-
-That repo becomes the single source of truth for platform services (Gateway API, External Secrets, Kyverno, monitoring, etc.) and application deployments.
-
-### Cleanup
-
-Destroy in reverse order to reduce dependency issues:
-
-```bash
-# Optional: remove Argo CD applications first (so LBs/NEGs clean up)
-# Then run terraform destroy per stack in reverse order
-```
+| Module | Description | Key Resources |
+|---------|-------------|---------------|
+| **networking** | Creates the networking foundation for the platform. | VPC, Private Subnets, Cloud Router, Cloud NAT, Firewall Rules |
+| **artifact-registry** | Creates container image repositories used by CI/CD pipelines. | Artifact Registry Repositories |
+| **cloud-storage** | Creates the remote backend for Terraform state management. | Google Cloud Storage Bucket |
+| **iam** | Configures identity, access control, and workload authentication. | IAM Roles, Service Accounts, Workload Identity Federation |
+| **cloud-sql** | Provisions the managed PostgreSQL database. | Cloud SQL Instance, Database, Users, Private IP |
+| **gke** | Creates the regional Kubernetes cluster and dedicated node pools. | GKE Cluster, Node Pools, Workload Identity, Gateway API |
+| **platform-services/argocd** | Deploys Argo CD for GitOps-based continuous delivery. | Argo CD |
+| **platform-services/external-secrets** | Synchronizes secrets from Google Secret Manager into Kubernetes. | External Secrets Operator, ClusterSecretStore, ExternalSecret |
+| **platform-services/vault** | Deploys HashiCorp Vault for centralized secrets management and secure secret access. | Vault Server, Storage Backend, Authentication Methods |
+| **platform-services/cert-manager** | Automates TLS certificate issuance and lifecycle management. | cert-manager, ClusterIssuer, Certificate |
+| **platform-services/gateway-api** | Deploys the Kubernetes Gateway API implementation for north-south traffic management. | Gateway API, NGINX Gateway Fabric |
+| **platform-services/kyverno** | Enforces Kubernetes security, governance, and policy compliance. | Kyverno, ClusterPolicies |
+| **platform-services/reloader** | Automatically restarts workloads when ConfigMaps or Secrets are updated. | Stakater Reloader |
+| **platform-services/keda** | Enables event-driven autoscaling for Kubernetes workloads. | KEDA Operator, ScaledObjects, TriggerAuthentication |
+| **platform-services/monitoring** | Deploys the observability stack for metrics, dashboards, and alerting. | Prometheus, Grafana, Alertmanager, ServiceMonitor, PrometheusRule |
+| **platform-services/falco** | Provides runtime threat detection and Kubernetes security monitoring. | Falco, Runtime Security Rules |
+| **platform-services/kubecost** | Provides Kubernetes cost visibility and resource optimization. | Kubecost |
+| **platform-services/velero** | Provides backup, disaster recovery, and cluster migration capabilities. | Velero, BackupStorageLocation, Schedule, Restore |
+| **platform-services/argo-rollouts** | Enables progressive delivery using canary and blue-green deployment strategies. | Argo Rollouts, AnalysisTemplate, Rollout |
+---
