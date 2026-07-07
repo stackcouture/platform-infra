@@ -138,12 +138,14 @@ The infrastructure provides the foundation for deploying platform services and a
 The provisioned Kubernetes platform hosts the core operational services required to support application delivery and cluster management. These services include GitOps controllers, ingress and gateway components, certificate management, observability, policy enforcement, cost monitoring, external secrets integration, progressive delivery, and other shared platform capabilities.
 
 Platform workloads are deployed independently after the infrastructure has been provisioned, ensuring a clear separation between infrastructure provisioning and platform operations.
+
 ---
 ### Cloud SQL for PostgreSQL
 
 Provisions a managed PostgreSQL database using Google Cloud SQL to provide a reliable, secure, and operationally managed relational database service for platform applications.
 
 The infrastructure automates database provisioning, private networking integration, storage configuration, backup policies, and lifecycle management while leveraging Google Cloud's managed database capabilities for maintenance, patching, and high availability.
+
 ---
 ### Identity and Access Management
 
@@ -168,8 +170,6 @@ Provisions Cloud Storage buckets used for Terraform remote state management and 
 ### Secret Management
 
 Integrates Google Secret Manager to centrally manage sensitive configuration values, API keys, credentials, and certificates required by infrastructure and platform services. Secrets remain external to source control and are securely consumed by workloads through platform integrations.
-
----
 
 ---
 ## Folder Structure
