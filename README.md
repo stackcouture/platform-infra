@@ -25,6 +25,31 @@ The primary objectives of this repository are to:
 
 ---
 
+---
+## Architecture
+
+![Platform Architecture](docs/images/platform-infra.png "Platform Architecture")
+
+
+### Infrastructure Provisioning Flow
+
+1. **`networking`** provisions the networking foundation, including the VPC, private subnet, Cloud Router, Cloud NAT, firewall rules, and Private Google Access.
+
+2. **`gke`** creates the regional Google Kubernetes Engine (GKE) cluster with dedicated node pools, Workload Identity, and Gateway API enabled.
+
+3. **`artifact-registry`** creates the Artifact Registry repositories used to store and distribute container images built by the CI pipeline.
+
+4. **`platform-iam`** provisions service accounts, IAM roles, and Workload Identity Federation required for GKE, Terraform, GitHub Actions, and platform services.
+
+5. **`cloud-storage`** creates the Google Cloud Storage (GCS) bucket used as the Terraform remote state backend.
+
+6. **`cloud-sql`** provisions a managed PostgreSQL instance, including private connectivity, database configuration, users, and automated backups.
+
+7. **`platform-services`** deploys the core Kubernetes platform services required to operate the cluster, including Argo CD, External Secrets, NGINX Gateway Fabric, cert-manager, Kyverno, kube-prometheus-stack, Kubecost, Argo Rollouts, and other shared platform components.
+
+8. After the infrastructure and platform services are deployed, **`Argo CD`** continuously synchronizes application manifests from the GitOps repository, ensuring the cluster remains in the desired state.
+
+---
 ## Repository Structure
 
 ```
@@ -293,30 +318,6 @@ platform-infra/
                   ├── variables.tf
                   └── outputs.tf
 ```
----
-## Architecture
-
-![Platform Architecture](docs/images/platform-infra.png "Platform Architecture")
-
-
-### Infrastructure Provisioning Flow
-
-1. **`networking`** provisions the networking foundation, including the VPC, private subnet, Cloud Router, Cloud NAT, firewall rules, and Private Google Access.
-
-2. **`gke`** creates the regional Google Kubernetes Engine (GKE) cluster with dedicated node pools, Workload Identity, and Gateway API enabled.
-
-3. **`artifact-registry`** creates the Artifact Registry repositories used to store and distribute container images built by the CI pipeline.
-
-4. **`platform-iam`** provisions service accounts, IAM roles, and Workload Identity Federation required for GKE, Terraform, GitHub Actions, and platform services.
-
-5. **`cloud-storage`** creates the Google Cloud Storage (GCS) bucket used as the Terraform remote state backend.
-
-6. **`cloud-sql`** provisions a managed PostgreSQL instance, including private connectivity, database configuration, users, and automated backups.
-
-7. **`platform-services`** deploys the core Kubernetes platform services required to operate the cluster, including Argo CD, External Secrets, NGINX Gateway Fabric, cert-manager, Kyverno, kube-prometheus-stack, Kubecost, Argo Rollouts, and other shared platform components.
-
-8. After the infrastructure and platform services are deployed, **Argo CD** continuously synchronizes application manifests from the GitOps repository, ensuring the cluster remains in the desired state.
-
 ---
 ## Infrastructure Components
 
