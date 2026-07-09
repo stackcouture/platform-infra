@@ -1,5 +1,32 @@
 # Platform infrastrucuture
 
+<div align="center">
+
+![Terraform](https://img.shields.io/badge/Terraform-Infrastructure_as_Code-623CE4?style=for-the-badge&logo=terraform)
+![Google Cloud](https://img.shields.io/badge/Google_Cloud-GCP-4285F4?style=for-the-badge&logo=googlecloud)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-GKE-326CE5?style=for-the-badge&logo=kubernetes)
+![Artifact Registry](https://img.shields.io/badge/Artifact_Registry-Container_Registry-1A73E8?style=for-the-badge)
+![Cloud SQL](https://img.shields.io/badge/Cloud_SQL-PostgreSQL-336791?style=for-the-badge&logo=postgresql)
+![GitOps](https://img.shields.io/badge/GitOps-ArgoCD-EF7B4D?style=for-the-badge&logo=argo)
+
+![Gateway API](https://img.shields.io/badge/Gateway_API-Traffic_Management-009688?style=for-the-badge)
+![Kyverno](https://img.shields.io/badge/Kyverno-Policy_as_Code-00A3E0?style=for-the-badge)
+![External Secrets](https://img.shields.io/badge/External_Secrets-Secret_Management-6A1B9A?style=for-the-badge)
+![cert-manager](https://img.shields.io/badge/cert--manager-TLS_Automation-326CE5?style=for-the-badge)
+![Prometheus](https://img.shields.io/badge/Prometheus-Monitoring-E6522C?style=for-the-badge&logo=prometheus)
+![Grafana](https://img.shields.io/badge/Grafana-Dashboards-F46800?style=for-the-badge&logo=grafana)
+
+![Kubecost](https://img.shields.io/badge/Kubecost-Cost_Optimization-3E8EDE?style=for-the-badge)
+![KEDA](https://img.shields.io/badge/KEDA-Event_Driven_Autoscaling-5A0FC8?style=for-the-badge)
+![Argo Rollouts](https://img.shields.io/badge/Argo_Rollouts-Progressive_Delivery-FC6D26?style=for-the-badge)
+![Falco](https://img.shields.io/badge/Falco-Runtime_Security-00AEEF?style=for-the-badge)
+![Velero](https://img.shields.io/badge/Velero-Backup_&_Recovery-0052CC?style=for-the-badge)
+![Vault](https://img.shields.io/badge/HashiCorp_Vault-Secrets-000000?style=for-the-badge&logo=vault)
+
+**Production-grade Infrastructure as Code (IaC) for provisioning and managing a secure, scalable Google Kubernetes Engine platform on Google Cloud Platform**
+
+</div>
+
 ---
 
 ## Overview
