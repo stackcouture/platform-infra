@@ -667,3 +667,13 @@ The infrastructure is organized into independent Terraform root modules. Each mo
 | **platform-services/velero** | Provides backup, disaster recovery, and cluster migration capabilities. | Velero, BackupStorageLocation, Schedule, Restore |
 | **platform-services/argo-rollouts** | Enables progressive delivery using canary and blue-green deployment strategies. | Argo Rollouts, AnalysisTemplate, Rollout |
 ---
+
+## Outputs 
+
+
+![VPC Network](docs/images/vpc-network.png "VPC Network")
+![Node pools](docs/images/node-pools.png "Node Pools")
+![Nodes](docs/images/nodes.png "Nodes")
+![IAM Accounts](docs/images/iam-accounts.png "IAM Accounts")
+
+---
