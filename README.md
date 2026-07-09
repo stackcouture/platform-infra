@@ -25,6 +25,45 @@ The primary objectives of this repository are to:
 
 ---
 
+## 📑 Table of Contents
+- [🏛 Architecture](#-architecture)
+  - [Infrastructure Provisioning Flow](#infrastructure-provisioning-flow)
+- [📂 Repository Structure](#-repository-structure)
+- [🏗 Infrastructure Components](#-infrastructure-components)
+  - [Networking](#networking)
+  - [Google Kubernetes Engine](#google-kubernetes-engine)
+  - [Platform Workloads](#platform-workloads)
+  - [Cloud SQL for PostgreSQL](#cloud-sql-for-postgresql)
+  - [Identity and Access Management](#identity-and-access-management)
+  - [Workload Identity Federation](#workload-identity-federation)
+  - [Artifact Registry](#artifact-registry)
+  - [Cloud Storage](#cloud-storage)
+  - [Secret Management](#secret-management)
+- [🛠 Technology Stack](#technology-stack)
+- [📋 Prerequisites](#prerequisites)
+  - [Google Cloud Platform](#google-cloud-platform)
+  - [Local Tools](#local-tools)
+  - [Authentication](#authentication)
+  - [Terraform Remote State](#terraform-remote-state)
+  - [GitHub](#github)
+  - [Required Permissions](#required-permissions)
+- [🚀 Getting Started](#getting-started)
+  - [Clone the Repository](#1-clone-the-repository)
+  - [Authenticate with Google Cloud](#2-authenticate-with-google-cloud)
+  - [Deploy Infrastructure Modules](#3-deploy-infrastructure-modules)
+  - [Deployment Order](#deployment-order)
+  - [Verify the GKE Cluster](#4-verify-the-gke-cluster)
+- [🔄 Deployment Workflow](#deployment-workflow)
+  - [Workflow Summary](#workflow-summary)
+- [🎯 Learning Outcomes](#learning-outcomes)
+  - [Infrastructure as Code](#infrastructure-as-code)
+  - [Google Cloud Platform](#google-cloud-platform-1)
+  - [Identity and Access Management](#identity-and-access-management-1)
+  - [Platform Foundation](#platform-foundation)
+  - [Architecture & Best Practices](#architecture--best-practices)
+- [📚 Module Documentation](#module-documentation)
+- [📊 Outputs](#outputs)
+
 ---
 ## Architecture
 
