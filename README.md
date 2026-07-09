@@ -577,77 +577,7 @@ kubectl get nodes
 
 The infrastructure is provisioned using a modular Terraform architecture. Each module is deployed independently in the recommended order to satisfy resource dependencies. Once the infrastructure is ready, GitOps is used to deploy and manage Kubernetes platform services and applications.
 
-```text
-┌──────────────────────┐
-│ Clone Repository     │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Configure GCP        │
-│ Authentication       │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Networking           │
-│ VPC, Subnets, NAT    │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Artifact Registry    │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Cloud Storage        │
-│ Terraform Backend    │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ IAM                  │
-│ Service Accounts     │
-│ Workload Identity    │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Cloud SQL            │
-│ PostgreSQL           │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Google Kubernetes    │
-│ Engine (GKE)         │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Platform Services    │
-│ Argo CD              │
-│ External Secrets     │
-│ cert-manager         │
-│ Gateway API          │
-│ Kyverno              │
-│ Monitoring           │
-│ Kubecost             │
-│ Argo Rollouts        │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ GitOps Repository    │
-│ Application Sync     │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ Production Platform  │
-└──────────────────────┘
-```
+![Deployment Flow](docs/images/deployment-flow.png "Deployment Flow")
 
 ### Workflow Summary
 
