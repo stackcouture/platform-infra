@@ -296,50 +296,9 @@ platform-infra/
 ---
 ## Architecture
 
-```
-┌───────────────────────────────────────────────────────────────────────────────────────────────┐
-│                     Google Cloud Platform (Region: asia-south1)                               │
-│                                                                                               │
-│  ┌─────────────────────────────────────────────────────────────────────────────────────────┐  │
-│  │                            VPC (Terraform Module: networking)                           │  │
-│  │                                                                                         │  │
-│  │   Private Subnet (asia-south1)                                                          │  │
-│  │                                                                                         │  │
-│  │   ┌──────────────────────────────────┐                                                  │  │
-│  │   │ Regional GKE Cluster             │                                                  │  │
-│  │   │ (Terraform Module: gke)          │                                                  │  │
-│  │   │                                  │                                                  │  │
-│  │   │  • Control Plane (Google Managed)|                                                  │  │
-│  │   │  • Gateway API Enabled           |                                                  │  │
-│  │   │  • Workload Identity Enabled     |                                                  │  │
-│  │   └──────────────────────────────────┘                                                  │  │
-│  │                                                                                         │  │
-│  │      ┌────────────┐   ┌────────────┐   ┌────────────┐                                   │  │
-│  │      │System Pool │   │ App Pool   │   │ Data Pool  │                                   │  │
-│  │      │ArgoCD      │   │Vote        │   │PostgreSQL  │                                   │  │
-│  │      │Monitoring  │   │Result      │   │Redis       │                                   │  │
-│  │      │Kyverno     │   │Worker      │   │PVCs        │                                   │  │
-│  │      └────────────┘   └────────────┘   └────────────┘                                   │  │
-│  │                                                                                         │  │
-│  │ Cloud NAT │ Cloud Router │ Firewall Rules │ Private Google Access                       │  │
-│  └─────────────────────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                               │
-│  ┌──────────────────────┐    ┌──────────────────────┐    ┌─────────────────────────────┐      │
-│  │ Artifact Registry    │    │ Cloud Storage        │    │ Secret Manager              │      │
-│  │ Docker Images        │    │ Terraform State      │    │ External Secrets            │      │
-│  └──────────────────────┘    └──────────────────────┘    └─────────────────────────────┘      │
-│                                                                                               │
-│  ┌─────────────────────────────────────────────────────────────────────────────────────────┐  │
-│  │ IAM (Terraform Module: platform-iam)                                                    │  │
-│  │                                                                                         │  │
-│  │ • GKE Service Accounts                                                                  │  │
-│  │ • GitHub Actions Workload Identity Federation                                           │  │
-│  │ • Artifact Registry Access                                                              │  │
-│  │ • GCS Backend Access                                                                    │  │
-│  └─────────────────────────────────────────────────────────────────────────────────────────┘  │
-└───────────────────────────────────────────────────────────────────────────────────────────────┘
-                                           
-```
+![Platform Architecture](docs/images/platform-infra.png "Platform Architecture")
+
+
 ### Infrastructure Provisioning Flow
 
 1. **`networking`** provisions the networking foundation, including the VPC, private subnet, Cloud Router, Cloud NAT, firewall rules, and Private Google Access.
