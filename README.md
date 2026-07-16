@@ -61,6 +61,616 @@ The following architecture illustrates the complete platform deployment on GCP.
 | **Enterprise Secrets Platform** | Deploys HashiCorp Vault for advanced secrets management and secure workload authentication. |
 
 ---
+## 🔄 Infrastructure Provisioning Flow
+
+Infrastructure is provisioned using a modular Terraform architecture, where each module is responsible for a specific layer of the platform. Resources are deployed in a defined sequence to satisfy dependencies, promote modularity, and ensure consistent, repeatable infrastructure provisioning across environments.
+
+```text
+┌──────────────────────────────────────────────┐
+│ 1. Networking                                │
+│    • VPC                                     │
+│    • Private Subnet                          │
+│    • Cloud Router                            │
+│    • Cloud NAT                               │
+│    • Firewall Rules                          │
+└──────────────────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────────────────┐
+│ 2. Artifact Registry                         │
+│    • Container Image Repositories            │
+└──────────────────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────────────────┐
+│ 3. Cloud Storage                             │
+│    • Terraform Remote State Backend          │
+└──────────────────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────────────────┐
+│ 4. Identity & Access Management              │
+│    • Service Accounts                        │
+│    • IAM Roles                               │
+│    • Workload Identity Federation            │
+└──────────────────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────────────────┐
+│ 5. Cloud SQL                                │
+│    • PostgreSQL Instance                     │
+│    • Private Connectivity                    │
+└──────────────────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────────────────┐
+│ 6. Google Kubernetes Engine (GKE)            │
+│    • Private Cluster                         │
+│    • Dedicated Node Pools                    │
+│    • VPC-native Networking                   │
+└──────────────────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────────────────┐
+│ 7. Platform Services                         │
+│    • Argo CD                                 │
+│    • External Secrets                        │
+│    • cert-manager                            │
+│    • Gateway API                             │
+│    • Kyverno                                 │
+│    • Prometheus & Grafana                    │
+│    • Kubecost                                │
+│    • KEDA                                    │
+│    • Argo Rollouts                           │
+│    • Falco                                   │
+│    • Velero                                  │
+│    • Vault                                   │
+└──────────────────────────────────────────────┘
+```
+
+The provisioning workflow establishes the complete cloud infrastructure and shared Kubernetes platform required to support application deployment. Once the infrastructure and platform services are operational, application workloads are deployed independently through a GitOps workflow, maintaining a clear separation between infrastructure lifecycle management and application delivery.
+
+---
+## Repository Structure
+
+```
+platform-infra/
+└── terraform/
+    ├── environments                      
+    |   |
+    |   ├── dev    
+    |   |    ├── networking/
+    |   |    |      ├── .gitignore
+    |   │    |      ├── main.tf
+    |   |    |      ├── outputs.tf
+    |   |    |      ├── provider.tf 
+    |   |    |      ├── terraform.tfvars
+    |   │    |      └── variables.tf
+    |   │    |
+    |   |    ├── cloud-sql/
+    |   |    |      ├── .gitignore
+    |   │    |      ├── main.tf
+    |   |    |      ├── outputs.tf
+    |   |    |      ├── provider.tf 
+    |   |    |      ├── terraform.tfvars
+    |   │    |      └── variables.tf
+    |   │    |
+    |   |    ├── gke/
+    |   |    |      ├── .gitignore
+    |   │    |      ├── main.tf
+    |   |    |      ├── outputs.tf
+    |   |    |      ├── provider.tf 
+    |   |    |      ├── terraform.tfvars
+    |   │    |      └── variables.tf
+    |   │    |
+    |   |    ├── iam/   
+    |   |    |      ├── .gitignore
+    |   │    |      ├── main.tf
+    |   |    |      ├── outputs.tf
+    |   |    |      ├── provider.tf 
+    |   │    |      └── variables.tf
+    |   │    |
+    |   │    ├── platform/
+    |   |    |        ├── argo-rollouts/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── cert-manager/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── argo-rollouts/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── external-secrets/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── falco/ 
+    |   |    |        |         ├── .gitignore
+    |   |    |        |         ├── backend.tf
+    |   |    |        |         ├── data.tf  
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── keda/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── kubecost/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── kyverno/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── monitoring/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── nginx-gateway/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── reloader/ 
+    |   |    |        |         ├── .gitignore
+    |   |    |        |         ├── backend.tf
+    |   |    |        |         ├── data.tf  
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── storage-classes/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        ├── vault/ 
+    |   |    |        |         ├── .gitignore
+    |   |    |        |         ├── backend.tf
+    |   |    |        |         ├── data.tf  
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf
+    |   |    |        |         ├── versions.tf 
+    |   │    |        |         └── variables.tf
+    |   |    |        └── velero/
+    |   |    |                  ├── .gitignore
+    |   |    |                  ├── backend.tf
+    |   |    |                  ├── data.tf  
+    |   │    |                  ├── main.tf
+    |   |    |                  ├── outputs.tf
+    |   |    |                  ├── provider.tf
+    |   |    |                  ├── versions.tf 
+    |   │    |                  └── variables.tf
+    |   |    |        
+    |   │    ├── storage/
+    |   |    |        ├── artifact-registry/ 
+    |   |    |        |         ├── .gitignore
+    |   │    |        |         ├── main.tf
+    |   |    |        |         ├── outputs.tf
+    |   |    |        |         ├── provider.tf 
+    |   │    |        |         └── variables.tf
+    |   │    |        |
+    |   |    |        └── cloud-storage/
+    |   |    |                  ├── .gitignore
+    |   │    |                  ├── main.tf
+    |   |    |                  ├── outputs.tf
+    |   |    |                  ├── provider.tf 
+    |   │    |                  └── variables.tf
+    |   |
+    |   └── prod
+    │
+    └── modules/
+        │
+        ├── cloud-sql/              # Postgres SQL 
+        │   ├── main.tf
+        │   ├── variables.tf
+        │   └── outputs.tf
+        |
+        ├── networking/              # VPC, subnets, firewall rules
+        │   ├── main.tf
+        │   ├── variables.tf
+        │   └── outputs.tf
+        │
+        ├── gke/                     # GKE cluster, node pool, cluster autoscaler
+        │   ├── main.tf
+        │   ├── variables.tf
+        │   └── outputs.tf
+        │
+        ├── iam/                     # Service accounts, IAM role bindings, Workload Identity
+        │   ├── main.tf
+        │   ├── variables.tf
+        │   └── outputs.tf
+        |
+        ├── platform/
+        |   ├── argo-rollouts/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── argocd/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── cert-manager/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── external-secrets/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── falco/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── keda/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── kubecost/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── kyverno/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── monitoring/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── nginx-gateway/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── reloader/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── storage-classes/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        |   |
+        |   ├── vault/      
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        │   │
+        |   └── velero/           
+        |          ├── main.tf
+        |          ├── variables.tf
+        |          └── outputs.tf
+        |
+        ├── storage/
+        |   └── artifact-registry/       # Artifact Registry Docker repository
+        │   │      ├── main.tf
+        │   │      ├── variables.tf
+        │   │      └── outputs.tf
+        │   │
+            └── cloud-storage/           # GCS bucket for Terraform remote state & artefacts
+                  ├── main.tf
+                  ├── variables.tf
+                  └── outputs.tf
+```
+---
+## 🛠 Technology Stack
+
+| Category | Technology | Purpose |
+|----------|------------|---------|
+| **Cloud Provider** | Google Cloud Platform (GCP) | Cloud infrastructure platform |
+| **Infrastructure as Code** | Terraform | Infrastructure provisioning and lifecycle management |
+| **Terraform Backend** | Google Cloud Storage (GCS) | Remote Terraform state management |
+| **Container Platform** | Google Kubernetes Engine (GKE) | Managed Kubernetes cluster |
+| **Container Runtime** | containerd | Kubernetes container runtime |
+| **Networking** | VPC, Private Subnet, Cloud Router, Cloud NAT, Private Google Access | Secure network architecture |
+| **Container Registry** | Artifact Registry | Private container image repositories |
+| **Database** | Cloud SQL for PostgreSQL | Managed relational database |
+| **Identity & Access Management** | IAM, Service Accounts, Workload Identity Federation | Authentication and authorization |
+| **Secrets Management** | Google Secret Manager | Centralized secret storage |
+| **GitOps** | Argo CD | Continuous delivery for Kubernetes |
+| **Ingress & Traffic Management** | Gateway API, NGINX Gateway Fabric | Kubernetes north-south traffic management |
+| **Certificate Management** | cert-manager | Automated TLS certificate lifecycle |
+| **External Secrets** | External Secrets Operator | Synchronize secrets into Kubernetes |
+| **Policy Management** | Kyverno | Kubernetes policy enforcement |
+| **Observability** | Prometheus, Grafana | Monitoring and visualization |
+| **Autoscaling** | KEDA | Event-driven workload autoscaling |
+| **Progressive Delivery** | Argo Rollouts | Canary and blue-green deployments |
+| **Cost Optimization** | Kubecost | Kubernetes cost monitoring |
+| **Runtime Security** | Falco | Runtime threat detection |
+| **Backup & Recovery** | Velero | Kubernetes backup and disaster recovery |
+| **Secrets Platform** | HashiCorp Vault | Advanced secrets management |
+| **Version Control** | Git | Source code management |
+| **Repository Hosting** | GitHub | Infrastructure source repository |
+
+---
+## 📋 Prerequisites
+
+Before deploying the infrastructure, ensure the following prerequisites are met.
+
+### Google Cloud Platform
+
+- Google Cloud project
+- Billing account enabled
+- Owner or Project Editor permissions
+- Required Google Cloud APIs enabled:
+  - Compute Engine API
+  - Kubernetes Engine API
+  - Artifact Registry API
+  - Cloud Resource Manager API
+  - Identity and Access Management (IAM) API
+  - IAM Credentials API
+  - Security Token Service (STS) API
+  - Service Usage API
+  - Secret Manager API
+  - Cloud Storage API
+  - SQL Admin API
+  - Service Networking API
+
+### Local Tools
+
+| Tool | Version |
+|------|---------|
+| Terraform | >= 1.8 |
+| Google Cloud CLI | Latest |
+| kubectl | Compatible with the GKE cluster version |
+| Git | Latest |
+
+### Authentication
+
+Authenticate with Google Cloud:
+
+```bash
+gcloud auth login
+
+gcloud config set project <PROJECT_ID>
+
+gcloud auth application-default login
+```
+
+### Terraform Backend
+
+Before the initial deployment, create a Google Cloud Storage bucket to store the Terraform remote state.
+
+Example:
+
+```bash
+gsutil mb -l asia-south1 gs://<terraform-state-bucket>
+```
+
+### GitHub
+
+- GitHub account
+- Repository access
+- GitHub Actions configured (optional)
+
+### Required Permissions
+
+The authenticated identity should be able to create and manage:
+
+- VPC Networks
+- Subnets
+- Firewall Rules
+- Cloud Router
+- Cloud NAT
+- GKE Clusters and Node Pools
+- Artifact Registry
+- Cloud Storage Buckets
+- Cloud SQL Instances
+- IAM Roles and Service Accounts
+- Workload Identity Federation
+- Secret Manager resources
+
+---
+## 🚀 Getting Started
+
+This repository follows a modular Terraform architecture. Each directory under `terraform/environments/<environment>` represents an independent Terraform root module responsible for provisioning a specific layer of the infrastructure.
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/stackcouture/platform-infra.git
+cd platform-infra
+```
+
+### Configure Google Cloud Authentication
+
+```bash
+gcloud auth login
+
+gcloud config set project <PROJECT_ID>
+
+gcloud auth application-default login
+```
+
+### Initialize Terraform
+
+Navigate to the desired infrastructure module and initialize Terraform.
+
+```bash
+cd terraform/environments/dev/networking
+
+terraform init
+```
+
+### Validate the Configuration
+
+```bash
+terraform validate
+```
+
+### Review the Execution Plan
+
+```bash
+terraform plan
+```
+
+### Apply the Configuration
+
+```bash
+terraform apply
+```
+
+Repeat the same workflow for each infrastructure module following the recommended deployment sequence.
+
+---
+
+### Deployment Order
+
+| Order | Module | Purpose |
+|------:|--------|---------|
+| 1 | `networking` | VPC, Private Subnet, Cloud Router, Cloud NAT, Firewall Rules |
+| 2 | `artifact-registry` | Artifact Registry repositories |
+| 3 | `cloud-storage` | Terraform remote state backend |
+| 4 | `iam` | IAM, Service Accounts, Workload Identity Federation |
+| 5 | `cloud-sql` | Managed PostgreSQL |
+| 6 | `gke` | Private GKE cluster and node pools |
+| 7 | `platform/*` | Shared Kubernetes platform services |
+
+### Verify the Deployment
+
+Retrieve the Kubernetes cluster credentials.
+
+```bash
+gcloud container clusters get-credentials <CLUSTER_NAME> \
+  --zone asia-south1-c
+```
+
+Verify that the cluster is operational.
+
+```bash
+kubectl get nodes
+```
+
+Verify the deployed node pools.
+
+```bash
+kubectl get nodes --show-labels
+```
+---
+## 🔄 Deployment Workflow
+
+The infrastructure is deployed using a modular Terraform workflow, where each module provisions a specific layer of the platform. Infrastructure components are deployed in dependency order to ensure that required resources are available before dependent services are provisioned.
+
+Once the foundational infrastructure has been created, shared Kubernetes platform services are deployed to the Google Kubernetes Engine (GKE) cluster, establishing the operational platform required for GitOps-based application delivery.
+
+```text
+Terraform Configuration
+          │
+          ▼
+Terraform Init
+          │
+          ▼
+Terraform Plan
+          │
+          ▼
+Terraform Apply
+          │
+          ▼
+Google Cloud Infrastructure
+(VPC, IAM, Cloud SQL,
+Artifact Registry, GKE)
+          │
+          ▼
+Shared Platform Services
+(Argo CD, Gateway API,
+cert-manager, Kyverno,
+Monitoring, etc.)
+          │
+          ▼
+Infrastructure Ready
+          │
+          ▼
+GitOps Repository
+(Application Deployment)
+```
+
+### Workflow Summary
+
+1. Initialize the Terraform working directory.
+2. Validate the Terraform configuration.
+3. Review the execution plan.
+4. Apply the infrastructure changes.
+5. Provision Google Cloud infrastructure resources.
+6. Deploy shared Kubernetes platform services.
+7. Verify infrastructure health and cluster readiness.
+8. Deploy application workloads through the GitOps repository.
+
+---
+## 📚 Module Documentation
+
+The infrastructure is organized into reusable Terraform modules, each responsible for provisioning a specific layer of the platform. This modular approach promotes separation of concerns, reusability, and simplified infrastructure lifecycle management.
+
+| Module | Description | Primary Resources |
+|---------|-------------|-------------------|
+| **networking** | Provisions the networking foundation for the platform. | VPC, Private Subnet, Secondary IP Ranges, Cloud Router, Cloud NAT, Firewall Rules |
+| **artifact-registry** | Creates private container image repositories. | Artifact Registry |
+| **cloud-storage** | Configures remote Terraform state storage. | Google Cloud Storage Bucket |
+| **iam** | Configures identity, authentication, and authorization. | IAM Roles, Service Accounts, Workload Identity Federation |
+| **cloud-sql** | Deploys the managed PostgreSQL database. | Cloud SQL Instance, Database, Users, Private IP |
+| **gke** | Creates the private Google Kubernetes Engine cluster and dedicated node pools. | GKE Cluster, System/App/Data Node Pools |
+| **platform/argocd** | Deploys Argo CD for GitOps-based continuous delivery. | Argo CD |
+| **platform/external-secrets** | Synchronizes secrets from Google Secret Manager into Kubernetes. | External Secrets Operator, ClusterSecretStore |
+| **platform/cert-manager** | Automates TLS certificate management. | cert-manager, ClusterIssuer, Certificate |
+| **platform/nginx-gateway** | Deploys the Kubernetes Gateway API implementation. | Gateway API, NGINX Gateway Fabric |
+| **platform/kyverno** | Enforces Kubernetes security and governance policies. | Kyverno, ClusterPolicies |
+| **platform/monitoring** | Deploys the monitoring stack. | Prometheus, Grafana, Alertmanager |
+| **platform/kubecost** | Provides Kubernetes cost visibility. | Kubecost |
+| **platform/keda** | Enables event-driven autoscaling. | KEDA Operator, ScaledObjects |
+| **platform/argo-rollouts** | Enables progressive delivery strategies. | Argo Rollouts, AnalysisTemplates |
+| **platform/falco** | Provides runtime threat detection. | Falco |
+| **platform/velero** | Enables backup and disaster recovery. | Velero |
+| **platform/vault** | Deploys centralized secrets management. | HashiCorp Vault |
+| **platform/reloader** | Automatically restarts workloads when ConfigMaps or Secrets change. | Stakater Reloader |
+| **platform/storage-classes** | Creates Kubernetes StorageClasses. | StorageClasses |
+
+---
 ## Sceenshots 
 
 <h5>VPC</h5> 
