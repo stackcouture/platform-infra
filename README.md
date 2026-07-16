@@ -643,7 +643,9 @@ kubectl get nodes
 
 The infrastructure is provisioned using a modular Terraform architecture. Each module is deployed independently in the recommended order to satisfy resource dependencies. Once the infrastructure is ready, GitOps is used to deploy and manage Kubernetes platform services and applications.
 
-![Deployment Flow](docs/images/deployment-flow.png "Deployment Flow")
+<p align="left">
+  <img src="docs/images/deployment-flow.png" width="550" alt="Deployment Flow">
+</p>
 
 ### Workflow Summary
 
