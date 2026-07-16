@@ -15,3 +15,21 @@ This repository provisions the complete cloud infrastructure required to run the
 </div>
 
 ---
+## Overview
+
+This repository provisions and manages the foundational cloud infrastructure for a production-inspired Kubernetes platform on **Google Cloud Platform (GCP)** using **Terraform**. By adopting Infrastructure as Code (IaC), it enables consistent, repeatable, and automated infrastructure provisioning while promoting modularity, maintainability, and operational reliability.
+
+The infrastructure is implemented as a collection of reusable Terraform modules that provision the core cloud resources required to operate the platform, including networking, Google Kubernetes Engine (GKE), Identity and Access Management (IAM), Artifact Registry, Cloud Storage, Cloud SQL for PostgreSQL, and other shared infrastructure services. In addition, the repository automates the deployment of essential Kubernetes platform components, establishing a secure and scalable foundation for cloud-native workloads.
+
+This repository is responsible exclusively for infrastructure provisioning and platform foundation. Application deployment, configuration management, and continuous delivery are managed separately through a GitOps workflow with Argo CD, ensuring a clear separation of concerns between infrastructure lifecycle management and application operations.
+
+---
+## 🏗️  Architecture
+
+The following architecture illustrates the complete platform deployment on GCP.
+
+<p align="left">
+  <img src="docs/images/arch.png" width="550" alt="Terraform">
+</p>
+
+---
