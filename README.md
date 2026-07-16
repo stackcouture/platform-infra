@@ -68,26 +68,32 @@ The following architecture illustrates the complete platform deployment on GCP.
   <img src="docs/images/vpc-network.png" width="550" alt="VPC">
 </p>
 
+<h5>Service Accounts</h5> 
 <p align="left">
   <img src="docs/images/service-accounts.png" width="550" alt="Service Accounts">
 </p>
 
+<h5>Nodes</h5> 
 <p align="left">
   <img src="docs/images/nodes.png" width="550" alt="Nodes">
 </p>
 
+<h5>Node Pools</h5> 
 <p align="left">
   <img src="docs/images/node-pools.png" width="550" alt="Nodes">
 </p>
 
+<h5>Cloud SQL</h5> 
 <p align="left">
   <img src="docs/images/cloud-sql.png" width="550" alt="Cloud SQL">
 </p>
 
+<h5>Artifact Repository</h5> 
 <p align="left">
   <img src="docs/images/artifact-repository.png" width="550" alt="Artifact Repository">
 </p>
 
+<h5>IAM Accounts</h5> 
 <p align="left">
   <img src="docs/images/iam-accounts.png" width="550" alt="IAM Accounts">
 </p>
