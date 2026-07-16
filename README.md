@@ -24,7 +24,22 @@ The infrastructure is implemented as a collection of reusable Terraform modules 
 This repository is responsible exclusively for infrastructure provisioning and platform foundation. Application deployment, configuration management, and continuous delivery are managed separately through a GitOps workflow with Argo CD, ensuring a clear separation of concerns between infrastructure lifecycle management and application operations.
 
 ---
-## 🏗️  Architecture
+## Table of Contents
+
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Infrastructure Capabilities](#infrastructure-capabilities)
+- [Infrastructure Provisioning Flow](#infrastructure-provisioning-flow)
+- [Repository Structure](#repository-structure)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Module Documentation](#module-documentation)
+- [Screenshots](#screenshots)
+- [Key Implementation Highlights](#key-implementation-highlights)
+- [License](#license)
+
+---
+## Architecture
 
 The following architecture illustrates the complete platform deployment on GCP.
 
@@ -33,7 +48,7 @@ The following architecture illustrates the complete platform deployment on GCP.
 </p>
 
 ---
-## 🚀 Infrastructure Capabilities
+## Infrastructure Capabilities
 
 | Capability | Description |
 |------------|-------------|
@@ -61,7 +76,7 @@ The following architecture illustrates the complete platform deployment on GCP.
 | **Enterprise Secrets Platform** | Deploys HashiCorp Vault for advanced secrets management and secure workload authentication. |
 
 ---
-## 🔄 Infrastructure Provisioning Flow
+## Infrastructure Provisioning Flow
 
 Infrastructure is provisioned using a modular Terraform architecture, where each module is responsible for a specific layer of the platform. Resources are deployed in a defined sequence to satisfy dependencies, promote modularity, and ensure consistent, repeatable infrastructure provisioning across environments.
 
@@ -97,7 +112,7 @@ Infrastructure is provisioned using a modular Terraform architecture, where each
                      │
                      ▼
 ┌──────────────────────────────────────────────┐
-│ 5. Cloud SQL                                │
+│ 5. Cloud SQL                                 │
 │    • PostgreSQL Instance                     │
 │    • Private Connectivity                    │
 └──────────────────────────────────────────────┘
@@ -400,7 +415,7 @@ platform-infra/
                   └── outputs.tf
 ```
 ---
-## 📋 Prerequisites
+## Prerequisites
 
 Before deploying the infrastructure, ensure the following prerequisites are met.
 
@@ -472,7 +487,7 @@ The authenticated identity should be able to create and manage:
 - Secret Manager resources
 
 ---
-## 🚀 Getting Started
+## Getting Started
 
 This repository follows a modular Terraform architecture. Each directory under `terraform/environments/<environment>` represents an independent Terraform root module responsible for provisioning a specific layer of the infrastructure.
 
@@ -559,7 +574,7 @@ kubectl get nodes --show-labels
 ```
 
 ---
-## 📚 Module Documentation
+## Module Documentation
 
 The infrastructure is organized into reusable Terraform modules, each responsible for provisioning a specific layer of the platform. This modular approach promotes separation of concerns, reusability, and simplified infrastructure lifecycle management.
 
@@ -587,7 +602,7 @@ The infrastructure is organized into reusable Terraform modules, each responsibl
 | **platform/storage-classes** | Creates Kubernetes StorageClasses. | StorageClasses |
 
 ---
-## 📸 Screenshots 
+## Screenshots 
 
 <h5>VPC</h5> 
 <p align="left">
@@ -625,7 +640,7 @@ The infrastructure is organized into reusable Terraform modules, each responsibl
 </p>
 
 ---
-## 🚀 Key Implementation Highlights
+## Key Implementation Highlights
 
 Building this infrastructure provided hands-on experience in designing, provisioning, and managing production-inspired cloud infrastructure on Google Cloud Platform using Infrastructure as Code (IaC).
 
@@ -667,7 +682,7 @@ Building this infrastructure provided hands-on experience in designing, provisio
 - Documented infrastructure using production-style repository standards
 
 ---
-## 📄 License
+## License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
