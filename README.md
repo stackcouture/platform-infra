@@ -63,6 +63,7 @@ The following architecture illustrates the complete platform deployment on GCP.
 ---
 ## Sceenshots 
 
+<h5>VPC</h5> 
 <p align="left">
   <img src="docs/images/vpc-network.png" width="550" alt="VPC">
 </p>
