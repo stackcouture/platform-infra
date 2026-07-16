@@ -61,3 +61,34 @@ The following architecture illustrates the complete platform deployment on GCP.
 | **Enterprise Secrets Platform** | Deploys HashiCorp Vault for advanced secrets management and secure workload authentication. |
 
 ---
+## Sceenshots 
+
+<p align="left">
+  <img src="docs/images/vpc-network.png" width="550" alt="VPC">
+</p>
+
+<p align="left">
+  <img src="docs/images/service-accounts.png" width="550" alt="Service Accounts">
+</p>
+
+<p align="left">
+  <img src="docs/images/nodes.png" width="550" alt="Nodes">
+</p>
+
+<p align="left">
+  <img src="docs/images/node-pools.png" width="550" alt="Nodes">
+</p>
+
+<p align="left">
+  <img src="docs/images/cloud-sql.png" width="550" alt="Cloud SQL">
+</p>
+
+<p align="left">
+  <img src="docs/images/artifact-repository.png" width="550" alt="Artifact Repository">
+</p>
+
+<p align="left">
+  <img src="docs/images/iam-accounts.png" width="550" alt="IAM Accounts">
+</p>
+
+---
