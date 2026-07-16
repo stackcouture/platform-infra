@@ -8,7 +8,7 @@
 ![Infrastructure](https://img.shields.io/badge/Infrastructure-Terraform-7B42BC?style=for-the-badge)
 ![IaC](https://img.shields.io/badge/Infrastructure_as_Code-IaC-0F9D58?style=for-the-badge)
 
-**Terraform-based Infrastructure as Code (IaC) for provisioning a production-inspired Kubernetes platform on Google Cloud Platform.**
+**Terraform-based Infrastructure as Code (IaC) for provisioning production-grade cloud infrastructure on Google Cloud Platform, including networking, Google Kubernetes Engine (GKE), identity, storage, databases, and shared Kubernetes platform services.**
 
 This repository provisions the complete cloud infrastructure required to run the platform, including networking, Google Kubernetes Engine (GKE), IAM, Artifact Registry, Cloud SQL, Cloud Storage, and shared Kubernetes platform services. It provides a modular, reusable, and production-oriented infrastructure foundation for GitOps-based deployments.
 
@@ -400,36 +400,6 @@ platform-infra/
                   └── outputs.tf
 ```
 ---
-## 🛠 Technology Stack
-
-| Category | Technology | Purpose |
-|----------|------------|---------|
-| **Cloud Provider** | Google Cloud Platform (GCP) | Cloud infrastructure platform |
-| **Infrastructure as Code** | Terraform | Infrastructure provisioning and lifecycle management |
-| **Terraform Backend** | Google Cloud Storage (GCS) | Remote Terraform state management |
-| **Container Platform** | Google Kubernetes Engine (GKE) | Managed Kubernetes cluster |
-| **Container Runtime** | containerd | Kubernetes container runtime |
-| **Networking** | VPC, Private Subnet, Cloud Router, Cloud NAT, Private Google Access | Secure network architecture |
-| **Container Registry** | Artifact Registry | Private container image repositories |
-| **Database** | Cloud SQL for PostgreSQL | Managed relational database |
-| **Identity & Access Management** | IAM, Service Accounts, Workload Identity Federation | Authentication and authorization |
-| **Secrets Management** | Google Secret Manager | Centralized secret storage |
-| **GitOps** | Argo CD | Continuous delivery for Kubernetes |
-| **Ingress & Traffic Management** | Gateway API, NGINX Gateway Fabric | Kubernetes north-south traffic management |
-| **Certificate Management** | cert-manager | Automated TLS certificate lifecycle |
-| **External Secrets** | External Secrets Operator | Synchronize secrets into Kubernetes |
-| **Policy Management** | Kyverno | Kubernetes policy enforcement |
-| **Observability** | Prometheus, Grafana | Monitoring and visualization |
-| **Autoscaling** | KEDA | Event-driven workload autoscaling |
-| **Progressive Delivery** | Argo Rollouts | Canary and blue-green deployments |
-| **Cost Optimization** | Kubecost | Kubernetes cost monitoring |
-| **Runtime Security** | Falco | Runtime threat detection |
-| **Backup & Recovery** | Velero | Kubernetes backup and disaster recovery |
-| **Secrets Platform** | HashiCorp Vault | Advanced secrets management |
-| **Version Control** | Git | Source code management |
-| **Repository Hosting** | GitHub | Infrastructure source repository |
-
----
 ## 📋 Prerequisites
 
 Before deploying the infrastructure, ensure the following prerequisites are met.
@@ -483,12 +453,6 @@ Example:
 ```bash
 gsutil mb -l asia-south1 gs://<terraform-state-bucket>
 ```
-
-### GitHub
-
-- GitHub account
-- Repository access
-- GitHub Actions configured (optional)
 
 ### Required Permissions
 
@@ -593,54 +557,6 @@ Verify the deployed node pools.
 ```bash
 kubectl get nodes --show-labels
 ```
----
-## 🔄 Deployment Workflow
-
-The infrastructure is deployed using a modular Terraform workflow, where each module provisions a specific layer of the platform. Infrastructure components are deployed in dependency order to ensure that required resources are available before dependent services are provisioned.
-
-Once the foundational infrastructure has been created, shared Kubernetes platform services are deployed to the Google Kubernetes Engine (GKE) cluster, establishing the operational platform required for GitOps-based application delivery.
-
-```text
-Terraform Configuration
-          │
-          ▼
-Terraform Init
-          │
-          ▼
-Terraform Plan
-          │
-          ▼
-Terraform Apply
-          │
-          ▼
-Google Cloud Infrastructure
-(VPC, IAM, Cloud SQL,
-Artifact Registry, GKE)
-          │
-          ▼
-Shared Platform Services
-(Argo CD, Gateway API,
-cert-manager, Kyverno,
-Monitoring, etc.)
-          │
-          ▼
-Infrastructure Ready
-          │
-          ▼
-GitOps Repository
-(Application Deployment)
-```
-
-### Workflow Summary
-
-1. Initialize the Terraform working directory.
-2. Validate the Terraform configuration.
-3. Review the execution plan.
-4. Apply the infrastructure changes.
-5. Provision Google Cloud infrastructure resources.
-6. Deploy shared Kubernetes platform services.
-7. Verify infrastructure health and cluster readiness.
-8. Deploy application workloads through the GitOps repository.
 
 ---
 ## 📚 Module Documentation
@@ -671,45 +587,45 @@ The infrastructure is organized into reusable Terraform modules, each responsibl
 | **platform/storage-classes** | Creates Kubernetes StorageClasses. | StorageClasses |
 
 ---
-## Sceenshots 
+## 📸 Screenshots 
 
 <h5>VPC</h5> 
 <p align="left">
-  <img src="docs/images/vpc-network.png" width="550" alt="VPC">
+  <img src="docs/images/vpc-network.png" width="900" alt="VPC">
 </p>
 
 <h5>Service Accounts</h5> 
 <p align="left">
-  <img src="docs/images/service-accounts.png" width="550" alt="Service Accounts">
+  <img src="docs/images/service-accounts.png" width="900" alt="Service Accounts">
 </p>
 
 <h5>Nodes</h5> 
 <p align="left">
-  <img src="docs/images/nodes.png" width="550" alt="Nodes">
+  <img src="docs/images/nodes.png" width="900" alt="Nodes">
 </p>
 
 <h5>Node Pools</h5> 
 <p align="left">
-  <img src="docs/images/node-pools.png" width="550" alt="Nodes">
+  <img src="docs/images/node-pools.png" width="900" alt="Nodes">
 </p>
 
 <h5>Cloud SQL</h5> 
 <p align="left">
-  <img src="docs/images/cloud-sql.png" width="550" alt="Cloud SQL">
+  <img src="docs/images/cloud-sql.png" width="900" alt="Cloud SQL">
 </p>
 
 <h5>Artifact Repository</h5> 
 <p align="left">
-  <img src="docs/images/artifact-repository.png" width="550" alt="Artifact Repository">
+  <img src="docs/images/artifact-repository.png" width="900" alt="Artifact Repository">
 </p>
 
 <h5>IAM Accounts</h5> 
 <p align="left">
-  <img src="docs/images/iam-accounts.png" width="550" alt="IAM Accounts">
+  <img src="docs/images/iam-accounts.png" width="900" alt="IAM Accounts">
 </p>
 
 ---
-## 🎯 Learning Outcomes
+## 🚀 Key Implementation Highlights
 
 Building this infrastructure provided hands-on experience in designing, provisioning, and managing production-inspired cloud infrastructure on Google Cloud Platform using Infrastructure as Code (IaC).
 
@@ -749,5 +665,10 @@ Building this infrastructure provided hands-on experience in designing, provisio
 - Established clear separation between infrastructure provisioning and application deployment
 - Followed Infrastructure as Code best practices for maintainability and reusability
 - Documented infrastructure using production-style repository standards
+
+---
+## 📄 License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ---
