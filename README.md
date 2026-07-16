@@ -709,3 +709,45 @@ The infrastructure is organized into reusable Terraform modules, each responsibl
 </p>
 
 ---
+## 🎯 Learning Outcomes
+
+Building this infrastructure provided hands-on experience in designing, provisioning, and managing production-inspired cloud infrastructure on Google Cloud Platform using Infrastructure as Code (IaC).
+
+### Infrastructure as Code
+
+- Designed reusable and modular Terraform modules
+- Managed infrastructure using independent Terraform root modules
+- Implemented remote state management with Google Cloud Storage
+- Consumed remote state outputs across infrastructure modules
+- Applied infrastructure lifecycle management using Terraform
+
+### Google Cloud Platform
+
+- Designed secure VPC networking with private subnets
+- Configured Cloud Router, Cloud NAT, and Private Google Access
+- Provisioned a private Google Kubernetes Engine (GKE) cluster
+- Implemented dedicated node pools with workload isolation
+- Provisioned Cloud SQL, Artifact Registry, and Cloud Storage resources
+
+### Identity & Security
+
+- Implemented least-privilege IAM policies
+- Configured Workload Identity Federation for secure workload authentication
+- Managed secrets using Google Secret Manager and External Secrets
+- Applied Kubernetes security policies using Kyverno
+
+### Kubernetes Platform Engineering
+
+- Provisioned shared Kubernetes platform services using Terraform
+- Configured Gateway API for ingress and traffic management
+- Implemented automated TLS certificate management with cert-manager
+- Enabled monitoring, autoscaling, and progressive delivery capabilities
+
+### Infrastructure Design
+
+- Built a modular and scalable infrastructure architecture
+- Established clear separation between infrastructure provisioning and application deployment
+- Followed Infrastructure as Code best practices for maintainability and reusability
+- Documented infrastructure using production-style repository standards
+
+---
