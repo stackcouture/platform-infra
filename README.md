@@ -41,10 +41,8 @@ This repository is responsible exclusively for infrastructure provisioning and p
 ---
 ## Architecture
 
-The following architecture illustrates the complete platform deployment on GCP.
-
 <p align="left">
-  <img src="docs/images/arch.png" width="550" alt="Terraform">
+  <img src="docs/images/arch.png" width="750" alt="Terraform">
 </p>
 
 ---
@@ -80,68 +78,10 @@ The following architecture illustrates the complete platform deployment on GCP.
 
 Infrastructure is provisioned using a modular Terraform architecture, where each module is responsible for a specific layer of the platform. Resources are deployed in a defined sequence to satisfy dependencies, promote modularity, and ensure consistent, repeatable infrastructure provisioning across environments.
 
-```text
-┌──────────────────────────────────────────────┐
-│ 1. Networking                                │
-│    • VPC                                     │
-│    • Private Subnet                          │
-│    • Cloud Router                            │
-│    • Cloud NAT                               │
-│    • Firewall Rules                          │
-└──────────────────────────────────────────────┘
-                     │
-                     ▼
-┌──────────────────────────────────────────────┐
-│ 2. Artifact Registry                         │
-│    • Container Image Repositories            │
-└──────────────────────────────────────────────┘
-                     │
-                     ▼
-┌──────────────────────────────────────────────┐
-│ 3. Cloud Storage                             │
-│    • Terraform Remote State Backend          │
-└──────────────────────────────────────────────┘
-                     │
-                     ▼
-┌──────────────────────────────────────────────┐
-│ 4. Identity & Access Management              │
-│    • Service Accounts                        │
-│    • IAM Roles                               │
-│    • Workload Identity Federation            │
-└──────────────────────────────────────────────┘
-                     │
-                     ▼
-┌──────────────────────────────────────────────┐
-│ 5. Cloud SQL                                 │
-│    • PostgreSQL Instance                     │
-│    • Private Connectivity                    │
-└──────────────────────────────────────────────┘
-                     │
-                     ▼
-┌──────────────────────────────────────────────┐
-│ 6. Google Kubernetes Engine (GKE)            │
-│    • Private Cluster                         │
-│    • Dedicated Node Pools                    │
-│    • VPC-native Networking                   │
-└──────────────────────────────────────────────┘
-                     │
-                     ▼
-┌──────────────────────────────────────────────┐
-│ 7. Platform Services                         │
-│    • Argo CD                                 │
-│    • External Secrets                        │
-│    • cert-manager                            │
-│    • Gateway API                             │
-│    • Kyverno                                 │
-│    • Prometheus & Grafana                    │
-│    • Kubecost                                │
-│    • KEDA                                    │
-│    • Argo Rollouts                           │
-│    • Falco                                   │
-│    • Velero                                  │
-│    • Vault                                   │
-└──────────────────────────────────────────────┘
-```
+<p align="left">
+  <img src="docs/images/infrastructure-provisioning-flow.png" width="750" alt="Terraform">
+</p>
+
 
 The provisioning workflow establishes the complete cloud infrastructure and shared Kubernetes platform required to support application deployment. Once the infrastructure and platform services are operational, application workloads are deployed independently through a GitOps workflow, maintaining a clear separation between infrastructure lifecycle management and application delivery.
 
@@ -149,7 +89,7 @@ The provisioning workflow establishes the complete cloud infrastructure and shar
 ## Repository Structure
 
 ```
-platform-infra/
+gke-infrastructure/
 └── terraform/
     ├── environments                      
     |   |
