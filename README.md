@@ -84,30 +84,20 @@ This repository does **not** manage application deployments or business workload
 ---
 ## Infrastructure Capabilities
 
-| Capability | Description |
-|------------|-------------|
-| **Infrastructure as Code** | Provisions cloud infrastructure using reusable and modular Terraform modules. |
-| **Cloud Foundation** | Deploys foundational resources on Google Cloud Platform (GCP). |
-| **Networking** | Configures a custom VPC, private subnet, Cloud Router, Cloud NAT, Private Google Access, and firewall rules. |
-| **Kubernetes Platform** | Provisions a private, VPC-native Google Kubernetes Engine (GKE) cluster. |
-| **Node Architecture** | Creates dedicated system, application, and data node pools with workload isolation using labels and taints. |
-| **Identity & Access Management** | Implements IAM, service accounts, and Workload Identity Federation following least-privilege principles. |
-| **Container Registry** | Provisions Artifact Registry repositories for container image storage. |
-| **Terraform State** | Configures a Google Cloud Storage backend for remote Terraform state management. |
-| **Database Services** | Provisions managed Cloud SQL for PostgreSQL with private connectivity. |
-| **Secrets Management** | Integrates Google Secret Manager for centralized secret storage and access. |
-| **GitOps Foundation** | Deploys Argo CD to enable GitOps-based platform and application delivery. |
-| **Ingress & Traffic Management** | Deploys Gateway API and NGINX Gateway Fabric for Kubernetes traffic management. |
-| **Certificate Management** | Automates TLS certificate lifecycle using cert-manager. |
-| **External Secrets** | Synchronizes secrets from Google Secret Manager into Kubernetes using External Secrets Operator. |
-| **Policy Enforcement** | Enforces Kubernetes security and governance policies with Kyverno. |
-| **Observability** | Deploys Prometheus and Grafana for metrics collection, visualization, and monitoring. |
-| **Event-Driven Autoscaling** | Enables workload autoscaling using Kubernetes Event-Driven Autoscaling (KEDA). |
-| **Progressive Delivery** | Supports canary and blue-green deployments using Argo Rollouts. |
-| **Cost Optimization** | Provides Kubernetes cost visibility and resource optimization through Kubecost. |
-| **Runtime Security** | Implements runtime threat detection and behavioral monitoring with Falco. |
-| **Backup & Disaster Recovery** | Enables backup, restore, and disaster recovery using Velero. |
-| **Enterprise Secrets Platform** | Deploys HashiCorp Vault for advanced secrets management and secure workload authentication. |
+| Capability                     | Description                                                                                                       |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Infrastructure as Code         | Provisions cloud infrastructure using reusable, modular Terraform modules.                                        |
+| Cloud Foundation               | Creates the foundational Google Cloud Platform (GCP) resources required for the Kubernetes environment.           |
+| Networking                     | Configures a custom VPC, private subnets, Cloud Router, Cloud NAT, Private Google Access, and firewall rules.     |
+| Google Kubernetes Engine (GKE) | Provisions a private, VPC-native Google Kubernetes Engine (GKE) cluster.                                          |
+| Node Architecture              | Creates dedicated system, application, and data node pools with workload isolation using labels and taints.       |
+| Identity & Access Management   | Configures IAM roles, service accounts, and Workload Identity Federation following least-privilege principles.    |
+| Container Registry             | Creates Artifact Registry repositories for storing container images.                                              |
+| Terraform State                | Configures a Google Cloud Storage backend for remote Terraform state management.                                  |
+| Database Services              | Provisions Cloud SQL for PostgreSQL with private network connectivity.                                            |
+| Secret Management Foundation   | Creates Google Secret Manager resources for centralized secret storage.                                           |
+| Cloud Storage                  | Provisions Google Cloud Storage buckets used by the environment.                                                  |
+| Reusable Terraform Modules     | Organizes infrastructure into reusable modules for networking, IAM, storage, databases, and Kubernetes resources. |
 
 ---
 ## Infrastructure Provisioning Flow
