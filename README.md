@@ -1,4 +1,51 @@
-## ☁️ Platform Infrastructure
+## GKE Infrastructure
+
+**Terraform • Google Cloud Platform • Google Kubernetes Engine • Infrastructure as Code**
+
+Terraform-based Infrastructure as Code (IaC) for provisioning a production-inspired cloud infrastructure on Google Cloud Platform (GCP), including networking, Google Kubernetes Engine (GKE), identity, storage, databases, and shared Kubernetes services.
+
+This repository provisions the cloud infrastructure required to support a cloud-native Kubernetes environment. It includes networking, Google Kubernetes Engine (GKE), Identity and Access Management (IAM), Artifact Registry, Cloud Storage, Cloud SQL, and the foundational Kubernetes services needed to operate workloads securely and reliably. The infrastructure is implemented using modular, reusable Terraform modules to promote consistency, maintainability, and automation.
+
+### Overview
+
+This repository provisions and manages the foundational cloud infrastructure for a production-inspired cloud-native Kubernetes environment on Google Cloud Platform (GCP) using Terraform.
+
+The infrastructure is organized as reusable Terraform modules that provision the core cloud resources required to operate Kubernetes workloads, including:
+
+* Virtual Private Cloud (VPC) networking
+* Google Kubernetes Engine (GKE)
+* Identity and Access Management (IAM)
+* Artifact Registry
+* Cloud Storage
+* Cloud SQL for PostgreSQL
+* Shared Kubernetes services
+
+In addition to cloud infrastructure, the repository automates the deployment of foundational Kubernetes services that support security, networking, observability, and cluster operations, providing a secure and scalable environment for cloud-native applications.
+
+This repository is responsible exclusively for infrastructure provisioning and foundational Kubernetes services. Application source code, Kubernetes manifests, and deployment workflows are managed separately through GitHub Actions and a GitOps workflow with Argo CD, maintaining a clear separation between infrastructure management and application delivery.
+
+### Objectives
+
+* Provision cloud infrastructure using Terraform
+* Build a private Google Kubernetes Engine (GKE) cluster
+* Configure secure networking and Identity and Access Management (IAM)
+* Deploy foundational Kubernetes services required for cluster operations
+* Provide reusable Terraform modules for consistent infrastructure provisioning
+* Establish the infrastructure required to support GitOps-based application deployments
+* Promote repeatable, automated, and production-inspired infrastructure management
+
+### Repository Scope
+
+This repository includes:
+
+* Google Cloud networking resources
+* Google Kubernetes Engine (GKE) provisioning
+* Identity and Access Management (IAM)
+* Artifact Registry
+* Cloud Storage
+* Cloud SQL
+* Foundational Kubernetes services
+* Terraform modules and environment configurations
 
 <div align="center">
 
@@ -8,20 +55,9 @@
 ![Infrastructure](https://img.shields.io/badge/Infrastructure-Terraform-7B42BC?style=for-the-badge)
 ![IaC](https://img.shields.io/badge/Infrastructure_as_Code-IaC-0F9D58?style=for-the-badge)
 
-**Terraform-based Infrastructure as Code (IaC) for provisioning production-grade cloud infrastructure on Google Cloud Platform, including networking, Google Kubernetes Engine (GKE), identity, storage, databases, and shared Kubernetes platform services.**
-
-This repository provisions the complete cloud infrastructure required to run the platform, including networking, Google Kubernetes Engine (GKE), IAM, Artifact Registry, Cloud SQL, Cloud Storage, and shared Kubernetes platform services. It provides a modular, reusable, and production-oriented infrastructure foundation for GitOps-based deployments.
+This repository does **not** manage application deployments or business workloads. Those responsibilities are handled through dedicated application repositories and GitOps configuration repositories.
 
 </div>
-
----
-## Overview
-
-This repository provisions and manages the foundational cloud infrastructure for a production-inspired Kubernetes platform on **Google Cloud Platform (GCP)** using **Terraform**. By adopting Infrastructure as Code (IaC), it enables consistent, repeatable, and automated infrastructure provisioning while promoting modularity, maintainability, and operational reliability.
-
-The infrastructure is implemented as a collection of reusable Terraform modules that provision the core cloud resources required to operate the platform, including networking, Google Kubernetes Engine (GKE), Identity and Access Management (IAM), Artifact Registry, Cloud Storage, Cloud SQL for PostgreSQL, and other shared infrastructure services. In addition, the repository automates the deployment of essential Kubernetes platform components, establishing a secure and scalable foundation for cloud-native workloads.
-
-This repository is responsible exclusively for infrastructure provisioning and platform foundation. Application deployment, configuration management, and continuous delivery are managed separately through a GitOps workflow with Argo CD, ensuring a clear separation of concerns between infrastructure lifecycle management and application operations.
 
 ---
 ## Table of Contents
