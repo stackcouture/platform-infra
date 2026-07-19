@@ -79,7 +79,7 @@ This repository is responsible exclusively for infrastructure provisioning and p
 Infrastructure is provisioned using a modular Terraform architecture, where each module is responsible for a specific layer of the platform. Resources are deployed in a defined sequence to satisfy dependencies, promote modularity, and ensure consistent, repeatable infrastructure provisioning across environments.
 
 <p align="left">
-  <img src="docs/images/infrastructure-provisioning-flow.png" width="750" alt="Terraform">
+  <img src="docs/images/infrastructure-provisioning-flow.png" width="450" alt="Terraform">
 </p>
 
 
